@@ -21,10 +21,40 @@ namespace MapGen
 		return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0);    
 	}
 
+	/**
+	 * Get noise value at (x,y) and map it to terrain image
+	 */
+	AssetImage getImage(int x, int y)
+	{
+		float noise = noise2(x,y);
+		if (noise < 0.1)
+			return Water;
+		else if (noise < 0.2)
+			return Sand;
+		else if (noise < 0.3)
+			return Dirt;
+		else if (noise < 0.4)
+			return GrassLight;
+		else if (noise < 0.5)
+			return GrassDark;
+		else
+			return Rocks;
+	}
+
 	void drawMap(GameCube* gc)
 	{
 		BG0Drawable draw = gc->m_vid->bg0;
-		draw.image(vec(0,0), Icon);
+		draw.image(vec(-30,-30), getImage(gc->m_x-1, gc->m_y-1));	// top left
+		draw.image(vec(-30,30), getImage(gc->m_x-1, gc->m_y));	// mid left
+		draw.image(vec(-30,90), getImage(gc->m_x-1, gc->m_y+1));	// bottom left
+
+		draw.image(vec(30,-30), getImage(gc->m_x, gc->m_y-1));	// top center
+		draw.image(vec(30,30), getImage(gc->m_x, gc->m_y));	// center
+		draw.image(vec(30,90), getImage(gc->m_x, gc->m_y+1));	// bottom center
+
+		draw.image(vec(90,-30), getImage(gc->m_x+1, gc->m_y-1));	// top right
+		draw.image(vec(90,30), getImage(gc->m_x+1, gc->m_y));		// center right
+		draw.image(vec(90,90), getImage(gc->m_x+1, gc->m_y+1));	// bottom right
 	}
 
 	void drawMap(VideoBuffer& vid)
