@@ -176,7 +176,7 @@ private:
         Neighborhood nb(gameCubes[prevMainCube].m_cube);
         if (nb.neighborAt(TOP) == mainCube)
         {
-            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
         }
         else if (nb.neighborAt(LEFT) == mainCube)
         {
@@ -188,7 +188,7 @@ private:
         }
         else if (nb.neighborAt(BOTTOM) == mainCube)
         {
-            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
         }
         gameCubes[mainCube].render();
 
