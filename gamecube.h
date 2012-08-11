@@ -1,0 +1,25 @@
+#include <sifteo.h>
+
+using namespace Sifteo;
+
+class GameCube
+{
+    public:
+        int m_id;
+
+        int m_x, m_y;
+        Neighborhood nb;
+        CubeID m_cube;
+        VideoBuffer* m_vid;
+        TiltShakeRecognizer* m_motion;
+        void initialize(int, VideoBuffer*, TiltShakeRecognizer*);
+        void fillBackground(unsigned);
+        void highlight();
+        void render();
+        void shutOff();
+        void drawCoord();
+
+        void setPos(int, int);
+    private:
+        int stuff;
+};

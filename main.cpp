@@ -152,7 +152,7 @@ private:
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
-
+/*
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborAdd++;
             drawNeighbors(firstID);
@@ -160,18 +160,48 @@ private:
         if (secondID < arraysize(counters)) {
             counters[secondID].neighborAdd++;
             drawNeighbors(secondID);
-        }
+        }*/
 
         gameCubes[mainCube].render();
         if (firstID == mainCube)
         {
-
-            gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
+            if (gameCubes[secondID].m_nb.neighborAt(TOP) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
+            }
+            else if (gameCubes[secondID].m_nb.neighborAt(LEFT) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x+1, gameCubes[mainCube].m_y);
+            }
+            else if (gameCubes[secondID].m_nb.neighborAt(RIGHT) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x-1, gameCubes[mainCube].m_y);
+            }
+            else if (gameCubes[secondID].m_nb.neighborAt(BOTTOM) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y-1);
+            }
             mainCube = secondID;
             gameCubes[secondID].render();
         }
         else if (secondID == mainCube)
         {
+            if (gameCubes[secondID].m_nb.neighborAt(TOP) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
+            }
+            else if (gameCubes[secondID].m_nb.neighborAt(LEFT) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x+1, gameCubes[mainCube].m_y);
+            }
+            else if (gameCubes[secondID].m_nb.neighborAt(RIGHT) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x-1, gameCubes[mainCube].m_y);
+            }
+            else if (gameCubes[secondID].m_nb.neighborAt(BOTTOM) == firstID)
+            {
+                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y-1);
+            }
             gameCubes[firstID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
             mainCube = firstID;
             gameCubes[firstID].render();
