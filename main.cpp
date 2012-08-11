@@ -68,7 +68,11 @@ private:
         if (id == 0)
         {
             mainCube = 0;
-            drawSelectionSquare(vid[cube].bg0rom);
+            renderWorld(cube);
+        }
+        else
+        {
+            fillBlack(cube);
         }
     }
 
@@ -133,6 +137,20 @@ private:
             counters[secondID].neighborRemove++;
             drawNeighbors(secondID);
         }
+
+        if (firstID == mainCube || secondID == mainCube)
+        {
+            if (firstID != mainCube)
+            {
+                CubeID cube(firstID);
+                fillBlack(cube);
+            }
+            else if (secondID != mainCube)
+            {
+                CubeID cube(secondID);
+                fillBlack(cube);
+            }
+        }
     }
 
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
@@ -153,14 +171,14 @@ private:
         if (firstID == mainCube)
         {
             mainCube = secondID;
-            removeSelectionSquare(vid[firstCube].bg0rom);
-            drawSelectionSquare(vid[secondCube].bg0rom);
+            //fillBlack(firstCube);
+            renderWorld(secondCube);
         }
         else if (secondID == mainCube)
         {
             mainCube = firstID;
-            drawSelectionSquare(vid[firstCube].bg0rom);
-            removeSelectionSquare(vid[secondCube].bg0rom);
+            renderWorld(firstCube);
+            //fillBlack(secondCube);
         }
     }
 
@@ -211,6 +229,26 @@ private:
         draw.fill(vec(0,0), vec(16,1), nbColor | draw.SOLID_BG);
         draw.fill(vec(15,0), vec(1,16), nbColor | draw.SOLID_BG);
         draw.fill(vec(0,15), vec(16,1), nbColor | draw.SOLID_BG);
+    }
+
+    static void fillBlack(CubeID &cube)
+    {
+        BG0ROMDrawable &draw = vid[cube].bg0rom;
+        draw.erase(draw.BLACK);
+        //draw.fill(vec(0,0), vec(16,16), draw.BLACK | draw.SOLID_FG);
+    }
+
+    static void renderWorld(CubeID &cube)
+    {
+        BG0ROMDrawable &draw = vid[cube].bg0rom;
+
+        unsigned nbColor = draw.ORANGE;
+        draw.erase();
+        draw.fill(vec(0,0), vec(1,16), nbColor | draw.SOLID_FG);
+        draw.fill(vec(0,0), vec(16,1), nbColor | draw.SOLID_FG);
+        draw.fill(vec(15,0), vec(1,16), nbColor | draw.SOLID_FG);
+        draw.fill(vec(0,15), vec(16,1), nbColor | draw.SOLID_FG);
+        //draw.fill(vec(1,1), vec(14,14), draw.WHITE | draw.SOLID_FG);
     }
 };
 
