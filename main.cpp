@@ -5,6 +5,7 @@
 #include <sifteo.h>
 #include "assets.gen.h"
 #include "gamecube.h"
+#include "mapgen.h"
 using namespace Sifteo;
 
 static Metadata M = Metadata()
@@ -61,10 +62,13 @@ private:
 
         //gCube.fillBackground(0);
 
+		//vid[id].bg0.image(vec(0,0), Water);
+		MapGen::drawMap(vid[id]);
+
         if (id == 0)
         {
             mainCube = 0;
-            gameCubes[id].render();
+            //gameCubes[id].render();
             gameCubes[id].highlight();
         }
         else

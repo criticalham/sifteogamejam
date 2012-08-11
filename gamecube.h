@@ -1,3 +1,6 @@
+#ifndef GAMECUBE_H
+#define GAMECUBE_H
+
 #include <sifteo.h>
 
 using namespace Sifteo;
@@ -8,7 +11,7 @@ class GameCube
         int m_id;
 
         int m_x, m_y;
-        Neighborhood nb;
+        Neighborhood m_nb;
         CubeID m_cube;
         VideoBuffer* m_vid;
         TiltShakeRecognizer* m_motion;
@@ -23,3 +26,5 @@ class GameCube
     private:
         int stuff;
 };
+
+#endif
