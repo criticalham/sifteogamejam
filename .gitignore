@@ -1,1 +1,7 @@
 *.elf
+*.o
+*.d
+
+.DS_Store
+
+art/tile_reference.png
