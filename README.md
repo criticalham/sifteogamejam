@@ -1,2 +1,1 @@
-siftogamejam
-============
+August 2012 Sifteo Game Jam!
