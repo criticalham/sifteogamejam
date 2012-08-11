@@ -25,7 +25,7 @@ public:
         unsigned neighborRemove;
     } counters[CUBE_ALLOCATION];
 
-    int mainCube;
+    int mainCube, prevMainCube;
 
     void install()
     {
@@ -162,50 +162,36 @@ private:
             drawNeighbors(secondID);
         }*/
 
+        prevMainCube = mainCube;
         gameCubes[mainCube].render();
         if (firstID == mainCube)
         {
-            if (gameCubes[secondID].m_nb.neighborAt(TOP) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(LEFT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x+1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(RIGHT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x-1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(BOTTOM) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y-1);
-            }
             mainCube = secondID;
-            gameCubes[secondID].render();
         }
         else if (secondID == mainCube)
         {
-            if (gameCubes[secondID].m_nb.neighborAt(TOP) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(LEFT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x+1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(RIGHT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x-1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(BOTTOM) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y-1);
-            }
-            gameCubes[firstID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
             mainCube = firstID;
-            gameCubes[firstID].render();
         }
+
+        Neighborhood nb(gameCubes[prevMainCube].m_cube);
+        if (nb.neighborAt(TOP) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
+        }
+        else if (nb.neighborAt(LEFT) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x-1, gameCubes[prevMainCube].m_y);
+        }
+        else if (nb.neighborAt(RIGHT) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x+1, gameCubes[prevMainCube].m_y);
+        }
+        else if (nb.neighborAt(BOTTOM) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
+        }
+        gameCubes[mainCube].render();
+
         gameCubes[mainCube].highlight();
     }
 

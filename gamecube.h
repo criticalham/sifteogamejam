@@ -8,7 +8,7 @@ class GameCube
         int m_id;
 
         int m_x, m_y;
-        Neighborhood nb;
+        Neighborhood m_nb;
         CubeID m_cube;
         VideoBuffer* m_vid;
         TiltShakeRecognizer* m_motion;
