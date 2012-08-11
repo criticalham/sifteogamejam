@@ -23,7 +23,7 @@ namespace MapGen
 
 	void drawMap(GameCube* gc)
 	{
-		BG0Drawable draw = gc->m_vid->bg0;
+		BG0Drawable draw = gc->m_vid.bg0;
 		draw.image(vec(0,0), Icon);
 	}
 

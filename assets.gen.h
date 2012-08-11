@@ -9,10 +9,10 @@
 extern Sifteo::AssetGroup IconAssets;
 extern const Sifteo::AssetImage Icon;
 extern Sifteo::AssetGroup GameAssets;
+extern const Sifteo::AssetImage Dirt;
+extern const Sifteo::AssetImage GrassDark;
+extern const Sifteo::AssetImage GrassLight;
+extern const Sifteo::AssetImage Rocks;
+extern const Sifteo::AssetImage Sand;
 extern const Sifteo::PinnedAssetImage Water;
-extern const Sifteo::PinnedAssetImage Dirt;
-extern const Sifteo::PinnedAssetImage Grass;
-extern const Sifteo::PinnedAssetImage GrassDark;
-extern const Sifteo::PinnedAssetImage Rocks;
 extern const Sifteo::PinnedAssetImage Font;
-extern const Sifteo::AssetTracker Music;

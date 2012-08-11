@@ -49,7 +49,7 @@ void GameCube::render()
 void GameCube::shutOff()
 {
     BG0Drawable &draw = m_vid.bg0;
-    draw.image(vec(8,8), Grass);
+    draw.image(vec(8,8), GrassDark);
 }
 
 void GameCube::drawCoord()

@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 -- Metadata
-
 IconAssets = group{quality=9.95}
 Icon = image{"icon.png"}
 
@@ -11,3 +9,4 @@ GrassLight = image{"art/grass_light.png"}
 Rocks = image{"art/rocks.png"}
 Sand = image{"art/sand.png"}
 Water = image{"art/water.png", pinned=true, width=32, height=32}
+Font = image{"font-8x16.png", pinned=true, width=8, height=16}

@@ -26,3 +26,5 @@ class GameCube
     private:
         int stuff;
 };
+
+#endif
