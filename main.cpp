@@ -4,6 +4,7 @@
 
 #include <sifteo.h>
 #include "assets.gen.h"
+#include "gamecube.h"
 using namespace Sifteo;
 
 static Metadata M = Metadata()
@@ -14,6 +15,7 @@ static Metadata M = Metadata()
 
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
+static GameCube gameCubes[CUBE_ALLOCATION];
 
 class SensorListener {
 public:
@@ -29,9 +31,9 @@ public:
     {
         Events::neighborAdd.set(&SensorListener::onNeighborAdd, this);
         Events::neighborRemove.set(&SensorListener::onNeighborRemove, this);
-        Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
-        Events::cubeTouch.set(&SensorListener::onTouch, this);
-        Events::cubeBatteryLevelChange.set(&SensorListener::onBatteryChange, this);
+        //Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
+        //Events::cubeTouch.set(&SensorListener::onTouch, this);
+        //Events::cubeBatteryLevelChange.set(&SensorListener::onBatteryChange, this);
         Events::cubeConnect.set(&SensorListener::onConnect, this);
 
         // Handle already-connected cubes
@@ -49,31 +51,27 @@ private:
         bzero(counters[id]);
         LOG("Cube %d connected\n", id);
 
-        vid[id].initMode(BG0_ROM);
-        vid[id].attach(id);
-        motion[id].attach(id);
-        /*
-        // Draw the cube's identity
-        String<128> str;
-        str << "I am cube #" << cube << "\nHear me roar\n";
-        str << "hwid " << Hex(hwid >> 32) << "\n     " << Hex(hwid) << "\n\n";
-        vid[cube].bg0rom.text(vec(1,2), str);
-        */
+        GameCube gCube = gameCubes[id];
+        gameCubes[id].initialize(id, &vid[id], &motion[id]);
         // Draw initial state for all sensors
-        onAccelChange(cube);
-        onBatteryChange(cube);
-        onTouch(cube);
-        drawNeighbors(cube);
+        //onAccelChange(cube);
+        //onBatteryChange(cube);
+        //onTouch(cube);
+        //drawNeighbors(cube);
+
+        //gCube.fillBackground(0);
 
         if (id == 0)
         {
             mainCube = 0;
-            renderWorld(cube);
+            gameCubes[id].render();
+            gameCubes[id].highlight();
         }
         else
         {
-            fillBlack(cube);
+            gameCubes[id].shutOff();
         }
+
     }
 
     void onBatteryChange(unsigned id)
@@ -138,17 +136,15 @@ private:
             drawNeighbors(secondID);
         }
 
-        if (firstID == mainCube || secondID == mainCube)
+        if (mainCube == firstID || mainCube == secondID)
         {
-            if (firstID != mainCube)
+            if (secondID != mainCube)
             {
-                CubeID cube(firstID);
-                fillBlack(cube);
+                gameCubes[secondID].shutOff();
             }
-            else if (secondID != mainCube)
+            else
             {
-                CubeID cube(secondID);
-                fillBlack(cube);
+                gameCubes[firstID].shutOff();
             }
         }
     }
@@ -166,20 +162,21 @@ private:
             drawNeighbors(secondID);
         }
 
-        CubeID firstCube(firstID);
-        CubeID secondCube(secondID);
+        gameCubes[mainCube].render();
         if (firstID == mainCube)
         {
+
+            gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
             mainCube = secondID;
-            //fillBlack(firstCube);
-            renderWorld(secondCube);
+            gameCubes[secondID].render();
         }
         else if (secondID == mainCube)
         {
+            gameCubes[firstID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
             mainCube = firstID;
-            renderWorld(firstCube);
-            //fillBlack(secondCube);
+            gameCubes[firstID].render();
         }
+        gameCubes[mainCube].highlight();
     }
 
     void drawNeighbors(CubeID cube)
@@ -199,56 +196,6 @@ private:
 
         BG0ROMDrawable &draw = vid[cube].bg0rom;
         //draw.text(vec(1,6), str);
-
-        drawSideIndicator(draw, nb, vec( 1,  0), vec(14,  1), TOP);
-        drawSideIndicator(draw, nb, vec( 0,  1), vec( 1, 14), LEFT);
-        drawSideIndicator(draw, nb, vec( 1, 15), vec(14,  1), BOTTOM);
-        drawSideIndicator(draw, nb, vec(15,  1), vec( 1, 14), RIGHT);
-    }
-
-    static void drawSideIndicator(BG0ROMDrawable &draw, Neighborhood &nb,
-        Int2 topLeft, Int2 size, Side s)
-    {
-        unsigned nbColor = draw.ORANGE;
-        //draw.fill(topLeft, size,
-        //    nbColor | (nb.hasNeighborAt(s) ? draw.SOLID_FG : draw.SOLID_BG));
-    }
-
-    static void drawSelectionSquare(BG0ROMDrawable &draw)
-    {
-        unsigned nbColor = draw.ORANGE;
-        draw.fill(vec(0,0), vec(1,16), nbColor | draw.SOLID_FG);
-        draw.fill(vec(0,0), vec(16,1), nbColor | draw.SOLID_FG);
-        draw.fill(vec(15,0), vec(1,16), nbColor | draw.SOLID_FG);
-        draw.fill(vec(0,15), vec(16,1), nbColor | draw.SOLID_FG);
-    }
-    static void removeSelectionSquare(BG0ROMDrawable &draw)
-    {
-        unsigned nbColor = draw.ORANGE;
-        draw.fill(vec(0,0), vec(1,16), nbColor | draw.SOLID_BG);
-        draw.fill(vec(0,0), vec(16,1), nbColor | draw.SOLID_BG);
-        draw.fill(vec(15,0), vec(1,16), nbColor | draw.SOLID_BG);
-        draw.fill(vec(0,15), vec(16,1), nbColor | draw.SOLID_BG);
-    }
-
-    static void fillBlack(CubeID &cube)
-    {
-        BG0ROMDrawable &draw = vid[cube].bg0rom;
-        draw.erase(draw.BLACK);
-        //draw.fill(vec(0,0), vec(16,16), draw.BLACK | draw.SOLID_FG);
-    }
-
-    static void renderWorld(CubeID &cube)
-    {
-        BG0ROMDrawable &draw = vid[cube].bg0rom;
-
-        unsigned nbColor = draw.ORANGE;
-        draw.erase();
-        draw.fill(vec(0,0), vec(1,16), nbColor | draw.SOLID_FG);
-        draw.fill(vec(0,0), vec(16,1), nbColor | draw.SOLID_FG);
-        draw.fill(vec(15,0), vec(1,16), nbColor | draw.SOLID_FG);
-        draw.fill(vec(0,15), vec(16,1), nbColor | draw.SOLID_FG);
-        //draw.fill(vec(1,1), vec(14,14), draw.WHITE | draw.SOLID_FG);
     }
 };
 

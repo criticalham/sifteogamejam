@@ -36,7 +36,7 @@ main.o: main.cpp \
   /Users/jfu/Downloads/sifteo-sdk-mac64-v0.9.6-30-gba4451b/include/sifteo/video/bg1.h \
   /Users/jfu/Downloads/sifteo-sdk-mac64-v0.9.6-30-gba4451b/include/sifteo/video/bg2.h \
   /Users/jfu/Downloads/sifteo-sdk-mac64-v0.9.6-30-gba4451b/include/sifteo/video/tilebuffer.h \
-  assets.gen.h
+  assets.gen.h gamecube.h
 
 /Users/jfu/Downloads/sifteo-sdk-mac64-v0.9.6-30-gba4451b/include/sifteo.h:
 
@@ -113,3 +113,5 @@ main.o: main.cpp \
 /Users/jfu/Downloads/sifteo-sdk-mac64-v0.9.6-30-gba4451b/include/sifteo/video/tilebuffer.h:
 
 assets.gen.h:
+
+gamecube.h:
