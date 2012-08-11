@@ -11,16 +11,18 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     m_id = idIn;
     m_vid = vid;
     m_motion = motion;
-    m_vid.initMode(BG0);
+    m_vid.initMode(BG0_BG1);
     m_vid.attach(m_id);
+
+    // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
+    m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(16,2)));
+
     m_motion.attach(m_id);
     m_cube = CubeID(m_id);
-    m_nb = Neighborhood(m_cube);
     m_x = 0;
     m_y = 0;
 
     fillBackground(0);
-
 }
 
 void GameCube::fillBackground(unsigned color)
@@ -43,7 +45,7 @@ void GameCube::render()
     fillBackground(0);
     drawCoord();
 
-    setRotation();
+    //updateRotation();
 }
 
 void GameCube::shutOff()
@@ -59,12 +61,31 @@ void GameCube::drawCoord()
         << m_x << ","
         << m_y << ")";
 
-    BG0Drawable &draw = m_vid.bg0;
-    draw.text(vec(1,1), Font, str);
+    BG1Drawable &draw = m_vid.bg1;
+    draw.text(vec(0,0), Font, str);
 }
-
-void GameCube::setRotation()
+int i = 0;
+void GameCube::updateRotation(Rotation r)
 {
+/*
+    Neighborhood nb(m_cube);
+    if (nb.neighborAt(TOP))
+    {
+        m_vid.setRotation(ROT_NORMAL);
+    }
+    else if (nb.neighborAt(BOTTOM))
+    {
+        m_vid.setRotation(ROT_180);
+    }
+    else if (nb.neighborAt(RIGHT))
+    {
+        m_vid.setRotation(ROT_RIGHT_90);
+    }
+    else if (nb.neighborAt(LEFT))
+    {
+        m_vid.setRotation(ROT_LEFT_90);
+    }*/
+    m_vid.setRotation(r);
 
 }
 
