@@ -2,11 +2,13 @@
 #define _MAPGEN_H
 
 #include <sifteo.h>
+#include "gamecube.h"
 using namespace Sifteo;
 
 namespace MapGen
 {
-  void drawMap(VideoBuffer* vid, CubeID &cube, int x, int y);
+	void drawMap(GameCube* gc);
+	void drawMap(VideoBuffer& vid);
 };
 
 #endif

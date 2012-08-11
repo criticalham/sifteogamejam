@@ -1,3 +1,5 @@
+#ifndef GAMECUBE_H
+#define GAMECUBE_H
 #include <sifteo.h>
 
 using namespace Sifteo;
