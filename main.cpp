@@ -5,7 +5,6 @@
 #include <sifteo.h>
 #include "assets.gen.h"
 #include "gamecube.h"
-#include "mapgen.h"
 using namespace Sifteo;
 
 static Metadata M = Metadata()
@@ -13,6 +12,9 @@ static Metadata M = Metadata()
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
     .cubeRange(3);
+
+static AssetSlot MainSlot = AssetSlot::allocate()
+    .bootstrap(GameAssets);
 
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
@@ -26,7 +28,7 @@ public:
         unsigned neighborRemove;
     } counters[CUBE_ALLOCATION];
 
-    int mainCube;
+    int mainCube, prevMainCube;
 
     void install()
     {
@@ -53,29 +55,30 @@ private:
         LOG("Cube %d connected\n", id);
 
         GameCube gCube = gameCubes[id];
-        gameCubes[id].initialize(id, &vid[id], &motion[id]);
+        gameCubes[id].initialize(id, vid[id], motion[id]);
+
+        //vid[id].initMode(BG0);
+        //vid[id].attach(cube);
+        //vid[id].bg0.image(vec(0,0), Dirt);
         // Draw initial state for all sensors
         //onAccelChange(cube);
         //onBatteryChange(cube);
         //onTouch(cube);
         //drawNeighbors(cube);
 
-        //gCube.fillBackground(0);
+        gCube.fillBackground(0);
 
-		//vid[id].bg0.image(vec(0,0), Water);
-		MapGen::drawMap(vid[id]);
 
         if (id == 0)
         {
             mainCube = 0;
-            //gameCubes[id].render();
+            gameCubes[id].render();
             gameCubes[id].highlight();
         }
         else
         {
             gameCubes[id].shutOff();
         }
-
     }
 
     void onBatteryChange(unsigned id)
@@ -156,7 +159,7 @@ private:
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
-/*
+
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborAdd++;
             drawNeighbors(firstID);
@@ -164,53 +167,39 @@ private:
         if (secondID < arraysize(counters)) {
             counters[secondID].neighborAdd++;
             drawNeighbors(secondID);
-        }*/
+        }
 
-        gameCubes[mainCube].render();
+        prevMainCube = mainCube;
+        gameCubes[mainCube].fillBackground(0);
         if (firstID == mainCube)
         {
-            if (gameCubes[secondID].m_nb.neighborAt(TOP) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(LEFT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x+1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(RIGHT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x-1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(BOTTOM) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y-1);
-            }
             mainCube = secondID;
-            gameCubes[secondID].render();
         }
         else if (secondID == mainCube)
         {
-            if (gameCubes[secondID].m_nb.neighborAt(TOP) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(LEFT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x+1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(RIGHT) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x-1, gameCubes[mainCube].m_y);
-            }
-            else if (gameCubes[secondID].m_nb.neighborAt(BOTTOM) == firstID)
-            {
-                gameCubes[secondID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y-1);
-            }
-            gameCubes[firstID].setPos(gameCubes[mainCube].m_x, gameCubes[mainCube].m_y+1);
             mainCube = firstID;
-            gameCubes[firstID].render();
         }
-        gameCubes[mainCube].highlight();
+
+        Neighborhood nb(gameCubes[prevMainCube].m_cube);
+        if (nb.neighborAt(TOP) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
+        }
+        else if (nb.neighborAt(LEFT) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x-1, gameCubes[prevMainCube].m_y);
+        }
+        else if (nb.neighborAt(RIGHT) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x+1, gameCubes[prevMainCube].m_y);
+        }
+        else if (nb.neighborAt(BOTTOM) == mainCube)
+        {
+            gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
+        }
+        gameCubes[mainCube].render();
+
+        //gameCubes[mainCube].highlight();
     }
 
     void drawNeighbors(CubeID cube)
