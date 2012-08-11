@@ -13,6 +13,9 @@ static Metadata M = Metadata()
     .icon(Icon)
     .cubeRange(3);
 
+static AssetSlot MainSlot = AssetSlot::allocate()
+    .bootstrap(GameAssets);
+
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
 static GameCube gameCubes[CUBE_ALLOCATION];
@@ -52,14 +55,19 @@ private:
         LOG("Cube %d connected\n", id);
 
         GameCube gCube = gameCubes[id];
-        gameCubes[id].initialize(id, &vid[id], &motion[id]);
+        gameCubes[id].initialize(id, vid[id], motion[id]);
+
+        //vid[id].initMode(BG0);
+        //vid[id].attach(cube);
+        //vid[id].bg0.image(vec(0,0), Dirt);
         // Draw initial state for all sensors
         //onAccelChange(cube);
         //onBatteryChange(cube);
         //onTouch(cube);
         //drawNeighbors(cube);
 
-        //gCube.fillBackground(0);
+        gCube.fillBackground(0);
+
 
         if (id == 0)
         {
@@ -71,7 +79,6 @@ private:
         {
             gameCubes[id].shutOff();
         }
-
     }
 
     void onBatteryChange(unsigned id)
@@ -152,7 +159,7 @@ private:
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
-/*
+
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborAdd++;
             drawNeighbors(firstID);
@@ -160,10 +167,10 @@ private:
         if (secondID < arraysize(counters)) {
             counters[secondID].neighborAdd++;
             drawNeighbors(secondID);
-        }*/
+        }
 
         prevMainCube = mainCube;
-        gameCubes[mainCube].render();
+        gameCubes[mainCube].fillBackground(0);
         if (firstID == mainCube)
         {
             mainCube = secondID;
@@ -192,7 +199,7 @@ private:
         }
         gameCubes[mainCube].render();
 
-        gameCubes[mainCube].highlight();
+        //gameCubes[mainCube].highlight();
     }
 
     void drawNeighbors(CubeID cube)
