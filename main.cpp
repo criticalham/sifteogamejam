@@ -181,21 +181,86 @@ private:
         }
 
         Neighborhood nb(gameCubes[prevMainCube].m_cube);
+        Neighborhood mainCubeNB(gameCubes[mainCube].m_cube);
         if (nb.neighborAt(TOP) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
-        }
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_180));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                //gameCubes[mainCube].updateRotation(Rotation(ROT_RIGHT_90));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_NORMAL));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                //gameCubes[mainCube].updateRotation(Rotation(ROT_LEFT_90));
+            }
+        }/*
         else if (nb.neighborAt(LEFT) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x-1, gameCubes[prevMainCube].m_y);
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_RIGHT_90));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_NORMAL));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_LEFT_90));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_180));
+            }
         }
         else if (nb.neighborAt(RIGHT) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x+1, gameCubes[prevMainCube].m_y);
-        }
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_LEFT_90));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_180));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_RIGHT_90));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_NORMAL));
+            }
+        }*/
         else if (nb.neighborAt(BOTTOM) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_NORMAL));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                //gameCubes[mainCube].updateRotation(Rotation(ROT_LEFT_90));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(Rotation(ROT_180));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                //gameCubes[mainCube].updateRotation(Rotation(ROT_RIGHT_90));
+            }
         }
         gameCubes[mainCube].render();
 
