@@ -308,7 +308,15 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
     {
         // Play a sound effect for finding a new tile?
         LOG("Found unvisited tile.\n");
+        m_visited[x-1][y-1] = true;
+        m_visited[x-1][y] = true;
+        m_visited[x-1][y+1] = true;
+        m_visited[x][y-1] = true;
         m_visited[x][y] = true;
+        m_visited[x][y+1] = true;
+        m_visited[x+1][y-1] = true;
+        m_visited[x+1][y] = true;
+        m_visited[x+1][y+1] = true;
     }
 
     if(keyX == x && keyY == y)
@@ -400,12 +408,26 @@ void Game::drawMiniMap(GameCube* gc)
 
     // TODO: draw 128x128 background grid
 
-    for (int i = 0; i < MAPSIZE; i+=2) {
-        for (int j = 0; j < MAPSIZE; j+=2) {
-            if(m_visited[i][j] == true)
-                draw.fill(vec(i, j), vec(2,2), Visited);
+    for (int i = 0; i < MAPSIZE; i+=1)
+    {
+        for (int j = 0; j < MAPSIZE; j+=1)
+        {
+            if(m_visited[i][j] == true && !worldObjects[i][j])
+                draw.fill(vec(i, j), vec(1,1), Visited);
             else
-                draw.fill(vec(i, j), vec(2,2), Unvisited);
+                draw.fill(vec(i, j), vec(1,1), Unvisited);
+
+            if(m_visited[i][j] == true)
+            {
+//                draw.fill(vec(i, j), vec(1,1), Visited);
+
+                if(worldObjects[i][j])
+                {
+                    LOG("Adding asset tile to map.\n");
+                    draw.fill(vec(i, j), vec(1,1), MapGen::intToAssetSmall(worldObjects[i][j]));
+                }
+            }
+
         }
     }
 
@@ -414,10 +436,26 @@ void Game::drawMiniMap(GameCube* gc)
         {
 //            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Unvisited);
         }
-        else
-        {
+        else {
             LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
-            draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(2,2), Highlight);
+            draw.fill(vec((gameCubes[i].m_x - 1 + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y - 1 + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x - 1 + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x - 1 + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y + 1 + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y - 1 + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y + 1 + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x + 1 + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y - 1+ MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x + 1 + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y + 1+ MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
+            draw.fill(vec((gameCubes[i].m_x + 1 + MAPSIZE) % MAPSIZE,
+                    (gameCubes[i].m_y + MAPSIZE) % MAPSIZE), vec(1, 1), Highlight);
         }
     }
 

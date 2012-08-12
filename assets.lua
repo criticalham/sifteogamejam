@@ -18,6 +18,11 @@ Boulder = image{"art/boulder.png", pinned=true, width=64, height=64}
 FlowerRed = image{"art/flower.png", pinned=true, width=64, height=64}
 FlowerBlue = image{"art/flower_blue.png", pinned=true, width=64, height=64}
 
+
+BoulderSmall = image{"art/boulder_small.png", pinned=true, width=8, height=8}
+FlowerRedSmall = image{"art/flower_small.png", pinned=true, width=8, height=8}
+FlowerBlueSmall = image{"art/flower_blue_small.png", pinned=true, width=8, height=8}
+
 Dirt = image{"art/dirt.png"}
 GrassDark = image{"art/grass_dark.png"}
 GrassLight = image{"art/grass_light.png"}
