@@ -87,35 +87,41 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
 /**
   * Handles cube touches
   */
-void Game::handleCubeTouch(GameCube* gameCube)
+void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 {
-    int x = gameCube->m_x;
-    int y = gameCube->m_y;
-    BG1Drawable& draw = gameCube->m_vid.bg1;
-
-    if(chestX == x && chestY == y)
+    if(isDown)
     {
-        if(gotChest)
+        int x = gameCube->m_x;
+        int y = gameCube->m_y;
+        BG1Drawable& draw = gameCube->m_vid.bg1;
+
+        if(chestX == x && chestY == y)
         {
-            LOG("Winner! Restarting game.\n");
-            //AudioChannel(0).play(CoinSound);
             restartGame();
+            if(gotChest)
+            {
+                LOG("Winner! Restarting game.\n");
+                //AudioChannel(0).play(CoinSound);
+                restartGame();
+            }
+
+            if(gotKey)
+            {
+                gotChest = true;
+                draw.maskedImage(ChestOpen, Transparent);
+            }
         }
 
-        if(gotKey)
+        if(!gotKey && keyX == x && keyY == y)
         {
             gotChest = true;
 
             //AudioChannel(0).play(CoinSound);
             draw.maskedImage(ChestOpen, Transparent);
+            gotKey = true;
+            gameCube->render();
         }
-    }
 
-    if(!gotKey && keyX == x && keyY == y)
-    {
-        gotKey = true;
-        gameCube->render();
+        draw.setPanning(vec(-32, -32));
     }
-
-    draw.setPanning(vec(-32, -32));
 }

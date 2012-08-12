@@ -102,7 +102,7 @@ private:
             " (" << counters[cube].touch << ")\n";
         //vid[cube].bg0rom.text(vec(1,9), str);
 
-        g_game.handleCubeTouch(&gameCubes[id]);
+        g_game.handleCubeTouch(&gameCubes[id], cube.isTouching());
     }
 
     void onAccelChange(unsigned id)
