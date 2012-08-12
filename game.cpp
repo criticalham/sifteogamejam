@@ -243,23 +243,22 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 void Game::drawMiniMap(GameCube* gc)
 {
     LOG("Drawing mini map");
-    FB64Drawable &draw = gc->m_vid.fb64;
-    gc->m_vid.colormap[0].set(1.f, 0.f, 0.f);
-    gc->m_vid.colormap[1].set(0.f, 1.f, 0.f);
+    BG0Drawable& draw = gc->m_vid.bg0;
 
+//    gc->m_vid.colormap[0].set(1.f, 0.f, 0.f);
+//    gc->m_vid.colormap[1].set(0.f, 1.f, 0.f);
 
-    for (int i = 0; i < 50; i++) {
-        draw.fill(vec(i, i), vec(3,3), 1);
-//        draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(3,3), 1);
-//        if(gameCubes[i].m_isOn)
-//        {
-//            LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
-//            draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(3,3), 1);
-//        }
+    // TODO: draw 128x128 background grid
+
+    for (int i = 0; i < CUBE_ALLOCATION; i++) {
+        if(gameCubes[i].m_isOn)
+        {
+            LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
+            draw.fill(vec(int(gameCubes[i].m_x / 2), int(gameCubes[i].m_y / 2)), vec(1,1), Highlight);
+        }
     }
 
     System::paint();
-
 }
 
 bool Game::positionVisible(int x, int y)

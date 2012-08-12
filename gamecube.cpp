@@ -211,14 +211,13 @@ void GameCube::undoHighlight()
 
 void GameCube::render()
 {
+//    m_motion.update();
+    m_motion.physicalTilt();
 
-    CubeID cube(m_id);
-    auto accel = cube.accel();
-
-    if(abs(accel.x) > 40 || abs(accel.y) > 40)
+    if(!m_isMiniMap && (m_motion.physicalTilt().x != 0 || m_motion.physicalTilt().y != 0))
     {
+        LOG("Drawing mini map!!!!\n\n\n");
         fillBackground();
-        LOG("Accels are %d %d %d, drawing mini map", accel.x, accel.y, accel.z);
         g_game.drawMiniMap(this);
     }
     else
@@ -391,8 +390,8 @@ Rotation GameCube::getRotation()
 
 void GameCube::setPos(int x, int y)
 {
-    m_x = (x + 64) % 64;
-    m_y = (y + 64) % 64;
+    m_x = (x + MAPSIZE) % MAPSIZE;
+    m_y = (y + MAPSIZE) % MAPSIZE;
     LOG("Tile %d: %d, %d\n", m_id, m_x, m_y);
 }
 

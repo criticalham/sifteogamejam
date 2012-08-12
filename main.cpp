@@ -108,15 +108,20 @@ private:
     void onAccelChange(unsigned id)
     {
 //        gameCubes[id].render();
-        CubeID cube(id);
-        auto accel = cube.accel();
+//        CubeID cube(id);
+//        auto accel = cube.accel();
 
-        if(abs(accel.x) > 40 || abs(accel.y) > 40)
+        gameCubes[id].m_motion.update();
+        gameCubes[id].m_motion.physicalTilt();
+
+//        LOG("Tilts are %d %d ", gameCubes[id].m_motion.physicalTilt().x, gameCubes[id].m_motion.physicalTilt().y);
+
+        if(gameCubes[id].m_motion.physicalTilt().x != 0 || gameCubes[id].m_motion.physicalTilt().y != 0)
         {
             if(!gameCubes[id].m_isMiniMap && !gameCubes[id].m_isOn)
             {
-                gameCubes[id].m_isMiniMap = true;
                 gameCubes[id].render();
+                gameCubes[id].m_isMiniMap = true;
             }
         }
         else
@@ -124,6 +129,7 @@ private:
             if(gameCubes[id].m_isMiniMap)
             {
                 gameCubes[id].m_isMiniMap = false;
+                LOG("Shutting off minimap");
                 gameCubes[id].shutOff();
             }
         }

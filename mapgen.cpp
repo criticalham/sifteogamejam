@@ -1,4 +1,3 @@
-
 #ifndef _MAPGEN_CPP
 #define _MAPGEN_CPP
 
@@ -9,6 +8,7 @@
 #include <sifteo.h>
 #include "assets.gen.h"
 #include "gamecube.h"
+#include "game.h"
 using namespace Sifteo;
 
 namespace MapGen
@@ -59,7 +59,7 @@ namespace MapGen
 	 */
 	AssetImage getImage(int x, int y)
 	{
-		float noise = smoothNoise((x + 64) % 64, (y + 64) % 64);
+        float noise = smoothNoise((x + MAPSIZE) % MAPSIZE, (y + MAPSIZE) % MAPSIZE);
 		if (noise < 0.15)
 		{
 			return GrassLight;//Water;

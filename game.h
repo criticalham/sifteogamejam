@@ -5,6 +5,8 @@
 #ifndef _GAME_H
 #define _GAME_H
 
+#define MAPSIZE 16
+
 #include <sifteo.h>
 #include "assets.gen.h"
 #include "gamecube.h"
@@ -44,7 +46,7 @@ private:
     int keyY;
     int chestX;
     int chestY;
-    int worldObjects[16][16];
+    char worldObjects[MAPSIZE][MAPSIZE];
 };
 
 extern Game g_game;
