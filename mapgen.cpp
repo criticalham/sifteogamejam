@@ -65,6 +65,7 @@ namespace MapGen
 		}
 	}
 
+
 	void drawMap(GameCube* gc)
 	{
 		BG0Drawable& draw = gc->m_vid.bg0;
