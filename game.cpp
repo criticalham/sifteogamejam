@@ -76,11 +76,6 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         LOG("Game chest found!\n");
     }
 
-    #ifdef DEBUG
-        LOG("Checking for key %d, %d, at %d, %d\n", keyX, keyY, x, y);
-        LOG("Checking for chest %d, %d, at %d, %d\n", chestX, chestY, x, y);
-    #endif
-
     draw.setPanning(vec(-32, -32));
 }
 

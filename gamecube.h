@@ -4,13 +4,21 @@
 
 using namespace Sifteo;
 
+#define NORTH 0
+#define EAST  1
+#define SOUTH 2
+#define WEST  3
+
 class GameCube
 {
     public:
         int m_id;
         bool m_isOn;
 
-        int m_x, m_y, m_rotation;
+        Side m_north;
+
+        Rotation m_rotation;
+        int m_x, m_y;
         Neighborhood m_nb;
         CubeID m_cube;
         VideoBuffer m_vid;
@@ -29,8 +37,17 @@ class GameCube
         Rotation getRotation();
         void setPos(int, int);
         bool isConnectedTo(int cubeID);
+        int clusterSize();
+
+        int directionTo(int cubeID);
 
     protected:
+        void drawLeftBorder();
+        void drawRightBorder();
+        void drawBottomBorder();
+        void drawTopBorder();
+        int clusterSizeRecursive(int &total, BitArray<CUBE_ALLOCATION> &seenCubes);
+        void highlightRecursive(BitArray<CUBE_ALLOCATION> &seenCubes);
         void turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &seenCubes);
         void shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes);
         bool isConnectedToRecursive(int cubeID, BitArray<CUBE_ALLOCATION> &seenCubes);
