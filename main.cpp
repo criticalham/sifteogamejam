@@ -224,6 +224,17 @@ private:
 
         if ((cube1->m_isOn && !cube2->m_isOn) || (!cube1->m_isOn && cube2->m_isOn))
         {
+            if (cube1->m_isMiniMap)
+            {
+                cube1->m_isMiniMap = false;
+                cube1->shutOff();
+            }
+            if (cube2->m_isMiniMap)
+            {
+                cube2->m_isMiniMap = false;
+                cube2->shutOff();
+            }
+
             GameCube *referenceCube;
             GameCube *newCube;
 
