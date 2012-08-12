@@ -22,7 +22,7 @@ class GameCube
         void highlight();
         void render();
         void shutOff();
-        void visit();
+        void visitAndDrawItems();
         void drawCoord();
         void updateRotation(Rotation);
         Rotation getRotation();

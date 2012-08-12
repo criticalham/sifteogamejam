@@ -23,8 +23,8 @@ void Game::reset()
 
     keyX = 0;
     keyY = 0;
-    chestX = 1;
-    chestY = 0;
+    chestX = 0;
+    chestY = 1;
 }
 
 void Game::restartGame()
@@ -43,12 +43,17 @@ void Game::run()
 /**
   * Marks that a given location has been visited
   */
-void Game::visited(int x, int y)
+void Game::visitAndDrawItemsAt(GameCube* gameCube)
 {
+    int x = gameCube->m_x;
+    int y = gameCube->m_y;
+    BG1Drawable& draw = gameCube->m_vid.bg1;
+
     if(!foundKey && keyX == x && keyY == y)
     {
         foundKey = true;
         LOG("Game key found!\n");
+        draw.image(vec(0,0), Key);
     }
 
     if(!foundChest && chestX == x && chestY == y)
@@ -60,7 +65,7 @@ void Game::visited(int x, int y)
     if(foundKey && foundChest)
     {
         restartGame();
-        LOG("Game over! Restarting game.");
+        LOG("Game over! Restarting game.\n");
     }
 
     #ifdef DEBUG

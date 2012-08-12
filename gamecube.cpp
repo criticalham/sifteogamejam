@@ -54,10 +54,10 @@ void GameCube::highlight()
 
 void GameCube::render()
 {
-    visit();
     fillBackground();
 	MapGen::drawMap(this);
     drawCoord();
+    visitAndDrawItems();
 
     //updateRotation();
 }
@@ -65,9 +65,9 @@ void GameCube::render()
 /**
 * Update game state based on this cube visit
 */
-void GameCube::visit()
+void GameCube::visitAndDrawItems()
 {
-    g_game.visited(m_x, m_y);
+    g_game.visitAndDrawItemsAt(this);
 }
 
 void GameCube::shutOff()

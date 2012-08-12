@@ -18,7 +18,7 @@ public:
     void reset();
     void draw();
     void run();
-    void visited(int x, int y);
+    void visitAndDrawItemsAt(GameCube* gameCube);
 
 private:
     void restartGame();
