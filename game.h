@@ -27,6 +27,7 @@ public:
     
     void drawMiniMap(GameCube* gc);
     int m_referenceCubeID;
+    bool m_visited[MAPSIZE][MAPSIZE];
 private:
     void restartGame();
     void generateItems();
