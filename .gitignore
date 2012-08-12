@@ -11,3 +11,5 @@ art/tile_reference.png
 assets.gen.d
 assets.gen.h
 assets.gen.cpp
+
+.idea/*

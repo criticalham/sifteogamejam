@@ -81,6 +81,11 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         LOG("Game chest found!\n");
     }
 
+    #ifdef DEBUG
+        LOG("Checking for key %d, %d, at %d, %d\n", keyX, keyY, x, y);
+        LOG("Checking for chest %d, %d, at %d, %d\n", chestX, chestY, x, y);
+    #endif
+
     draw.setPanning(vec(-32, -32));
 }
 
@@ -103,6 +108,7 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
                 LOG("Restarting game.\n");
                 restartGame();
                 gameCube->render();
+                gameCube->highlight();
             }
 
             if(gotKey)
@@ -111,6 +117,7 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
                 AudioChannel(0).play(CoinSound);
                 LOG("Chest got!\n");
                 draw.maskedImage(ChestOpen, Transparent);
+                gameCube->highlight();
             }
         }
 
@@ -120,8 +127,9 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
             LOG("Key got!\n");
             gotKey = true;
             gameCube->render();
+            gameCube->highlight();
         }
 
         draw.setPanning(vec(-32, -32));
-    }
+      }
 }
