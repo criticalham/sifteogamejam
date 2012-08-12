@@ -8,6 +8,9 @@ Key = sound{"key.wav"}
 
 GameAssets = group{}
 Dirt = image{"art/dirt.png"}
+Key = image{"art/key.png"}
+ChestClosed = image{"art/chest_closed.png"}
+ChestOpen = image{"art/chest_open.png"}
 GrassDark = image{"art/grass_dark.png"}
 GrassLight = image{"art/grass_light.png"}
 Rocks = image{"art/rocks.png"}

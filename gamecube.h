@@ -16,12 +16,14 @@ class GameCube
         VideoBuffer m_vid;
         TiltShakeRecognizer m_motion;
         void initialize(int, VideoBuffer&, TiltShakeRecognizer&);
+        void reset();
         void fillBackground();
         void highlight();
         void undoHighlight();
         void render();
         void turnOn(int referenceCubeID);
         void shutOff();
+        void visitAndDrawItems();
         void drawCoord();
         void updateRotation(Rotation);
         Rotation getRotation();

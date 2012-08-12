@@ -1,5 +1,6 @@
 #define GAMECUBE
 #include "gamecube.h"
+#include "game.h"
 #include <sifteo.h>
 #include "assets.gen.h"
 #include "mapgen.h"
@@ -19,11 +20,19 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     m_vid.attach(m_id);
 
     // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
-    m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(16,2)));
+    m_vid.bg1.setMask(BG1Mask::filled(vec(2,2), vec(12,12)));
     m_vid.bg1.fill(Transparent);
 
     m_motion.attach(m_id);
     m_cube = CubeID(m_id);
+    reset();
+}
+
+/**
+* Resets cube back to initial state
+*/
+void GameCube::reset()
+{
     m_x = 0;
     m_y = 0;
     m_isOn = false;
@@ -34,8 +43,10 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
 void GameCube::fillBackground()
 {
     BG0Drawable &draw = m_vid.bg0;
+    BG1Drawable &draw1 = m_vid.bg1;
     draw.image(vec(0,0), Emptiness);
     draw.erase();
+    draw1.erase();
 }
 
 void GameCube::highlight()
@@ -56,7 +67,17 @@ void GameCube::render()
 {
     fillBackground();
 	MapGen::drawMap(this);
-    drawCoord();
+    //drawCoord();
+    visitAndDrawItems();
+    //updateRotation();
+}
+
+/**
+* Update game state based on this cube visit
+*/
+void GameCube::visitAndDrawItems()
+{
+    g_game.visitAndDrawItemsAt(this);
 }
 
 void GameCube::shutOff()
@@ -112,7 +133,7 @@ void GameCube::drawCoord()
 
     BG1Drawable &draw = m_vid.bg1;
 
-    draw.text(vec(0,0), Font, str);
+    //draw.text(vec(0,0), Font, str);
 }
 int i = 0;
 void GameCube::updateRotation(Rotation r)
@@ -147,6 +168,7 @@ void GameCube::setPos(int x, int y)
 {
     m_x = x;
     m_y = y;
+    LOG("Tile %d: %d, %d\n", m_id, m_x, m_y);
 }
 
 void GameCube::turnOn(int referenceCubeID)
@@ -179,9 +201,9 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     LOG("Turning on ID %d\n", m_id);
 
     // Ensure the attached cube is facing the same direction as the main cube
-    if (referenceNeighborhood.neighborAt(TOP) == referenceCubeID)
+    if (referenceNeighborhood.neighborAt(TOP) == m_id)
     {
-        setPos(referenceCube.m_x, referenceCube.m_y+1);
+        setPos(referenceCube.m_x, referenceCube.m_y-2);
 
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
@@ -202,7 +224,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     }
     else if (referenceNeighborhood.neighborAt(LEFT) == m_id)
     {
-        setPos(referenceCube.m_x-1, referenceCube.m_y);
+        setPos(referenceCube.m_x-2, referenceCube.m_y);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
@@ -223,7 +245,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
 
     else if (referenceNeighborhood.neighborAt(RIGHT) == m_id)
     {
-        setPos(referenceCube.m_x+1, referenceCube.m_y);
+        setPos(referenceCube.m_x+2, referenceCube.m_y);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
@@ -243,7 +265,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     }
     else if (referenceNeighborhood.neighborAt(BOTTOM) == m_id)
     {
-        setPos(referenceCube.m_x, referenceCube.m_y-1);
+        setPos(referenceCube.m_x, referenceCube.m_y+2);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
@@ -261,6 +283,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
             updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
         }
     }
+    
     render();
 
     if (currentNeighborhood.hasNeighborAt(TOP))

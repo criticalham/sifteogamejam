@@ -4,6 +4,7 @@
 
 #include <sifteo.h>
 #include "assets.gen.h"
+#include "game.h"
 #include "gamecube.h"
 using namespace Sifteo;
 
@@ -18,7 +19,7 @@ static AssetSlot MainSlot = AssetSlot::allocate()
 
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
-
+Game g_game;
 GameCube gameCubes[CUBE_ALLOCATION];
 
 class SensorListener {
@@ -36,7 +37,7 @@ public:
         Events::neighborAdd.set(&SensorListener::onNeighborAdd, this);
         Events::neighborRemove.set(&SensorListener::onNeighborRemove, this);
         //Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
-        //Events::cubeTouch.set(&SensorListener::onTouch, this);
+        Events::cubeTouch.set(&SensorListener::onTouch, this);
         //Events::cubeBatteryLevelChange.set(&SensorListener::onBatteryChange, this);
         Events::cubeConnect.set(&SensorListener::onConnect, this);
 
@@ -100,6 +101,8 @@ private:
         str << "touch: " << cube.isTouching() <<
             " (" << counters[cube].touch << ")\n";
         //vid[cube].bg0rom.text(vec(1,9), str);
+
+        g_game.handleCubeTouch(&gameCubes[id]);
     }
 
     void onAccelChange(unsigned id)
@@ -251,8 +254,9 @@ private:
 
 void main()
 {
-    static SensorListener sensors;
+    g_game.initWithCubes(gameCubes);
 
+    SensorListener sensors;
     sensors.install();
 
     AudioTracker::play(Music);
@@ -260,5 +264,7 @@ void main()
     // We're entirely event-driven. Everything is
     // updated by SensorListener's event callbacks.
     while (1)
-        System::paint();
+    {
+        g_game.run();
+    }
 }
