@@ -29,11 +29,6 @@ void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
     reset();
 
     LOG("init() completed\n");
-    for (int i = 0; i < MAPSIZE; i++) {
-        for (int j = 0; j < MAPSIZE; j++) {
-            m_visited[i][j] = false;
-        }
-    }
 }
 
 bool Game::itemInRange(UInt2 objectPos, UInt2 targetPos, int radius)
@@ -155,6 +150,15 @@ void Game::debugWorld()
 
 void Game::reset()
 {
+    // Reset visited map
+    for (int i = 0; i < MAPSIZE; i++)
+    {
+        for (int j = 0; j < MAPSIZE; j++)
+        {
+            m_visited[i][j] = false;
+        }
+    }
+
     foundKey = false;
     foundChest = false;
     gotKey = false;
