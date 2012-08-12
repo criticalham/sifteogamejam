@@ -31,10 +31,13 @@ void Game::reset()
 
 void Game::restartGame()
 {
+    // Reset game data
     reset();
 
-    for(int cubeIndex=0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
+    // Reset all cubes
+    for (int cubeIndex = 0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
     {
+        LOG("Resetting m_gameCube[%d]\n", cubeIndex);
         m_gameCubes[cubeIndex].reset();
     }
 }
@@ -89,6 +92,7 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
   */
 void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 {
+    LOG("isDown is %d\n", isDown);
     if(isDown)
     {
         int x = gameCube->m_x;
@@ -97,7 +101,6 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 
         if(chestX == x && chestY == y)
         {
-            restartGame();
             if(gotChest)
             {
                 LOG("Winner! Restarting game.\n");
@@ -108,13 +111,16 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
             if(gotKey)
             {
                 gotChest = true;
+                LOG("Chest got!\n");
                 draw.maskedImage(ChestOpen, Transparent);
             }
         }
 
         if(!gotKey && keyX == x && keyY == y)
         {
-            gotChest = true;
+            LOG("Key got!\n");
+
+            gotKey = true;
 
             //AudioChannel(0).play(CoinSound);
             draw.maskedImage(ChestOpen, Transparent);
