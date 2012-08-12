@@ -166,8 +166,8 @@ Rotation GameCube::getRotation()
 
 void GameCube::setPos(int x, int y)
 {
-    m_x = x;
-    m_y = y;
+    m_x = (x + 64) % 64;
+    m_y = (y + 64) % 64;
     LOG("Tile %d: %d, %d\n", m_id, m_x, m_y);
 }
 

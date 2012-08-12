@@ -18,7 +18,7 @@ namespace MapGen
 	{
 		unsigned n = x + y * 57;
 		n = (n<<13) ^ n;
-		return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0);    
+		return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 2147483647) / 1073741824.0);
 	}
 
 	/**
@@ -26,7 +26,7 @@ namespace MapGen
 	 */
 	AssetImage getImage(int x, int y)
 	{
-		float noise = noise2(x,y);
+		float noise = noise2((x + 64) % 64, (y + 64) % 64);
 		if (noise < 0.1)
 			return Water;
 		else if (noise < 0.2)
