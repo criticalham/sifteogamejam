@@ -71,7 +71,7 @@ private:
         //onTouch(cube);
         //drawNeighbors(cube);
 
-        gCube.fillBackground(0);
+        gCube.fillBackground();
 
         if (id == 0)
         {
@@ -259,6 +259,8 @@ private:
 
             LOG("SHUTTING OFF BOTH CUBES");
         }
+
+
 
         /*
         prevMainCube = mainCube;
