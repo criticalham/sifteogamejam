@@ -20,6 +20,7 @@ public:
     void run();
     void visitAndDrawItemsAt(GameCube* gameCube);
     void handleCubeTouch(GameCube* gameCube, bool isDown);
+    bool positionVisible(int, int);
 
 private:
     void restartGame();

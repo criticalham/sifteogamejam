@@ -23,10 +23,16 @@ void Game::reset()
     gotKey = false;
     gotChest = false;
 
-    keyX = 0;
-    keyY = 0;
-    chestX = 2;
-    chestY = 0;
+    do
+    {
+        keyX = Random().randrange(16) * 2;
+        keyY = Random().randrange(16) * 2;
+    } while (positionVisible(keyX, keyY));
+    do
+    {
+        chestX = Random().randrange(16) * 2;
+        chestY = Random().randrange(16) * 2;
+    } while (positionVisible(chestX, chestY));
 }
 
 void Game::restartGame()
@@ -133,5 +139,14 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
         }
 
         draw.setPanning(vec(-32, -32));
-      }
+    }
+}
+
+bool Game::positionVisible(int x, int y)
+{
+    for (int cubeIndex = 0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
+    {
+        if (m_gameCubes[cubeIndex].m_x == x && m_gameCubes[cubeIndex].m_y == y) return true;
+    }
+    return false;
 }

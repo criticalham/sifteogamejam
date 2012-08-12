@@ -24,8 +24,8 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
     //m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(10,10)));
 
-    m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(10,10)));
-    m_vid.bg1.fillMask(vec(0,0), vec(10,10));
+    m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(16,16)));
+    //m_vid.bg1.fillMask(vec(0,0), vec(16,16));
     m_vid.bg1.fill(Transparent);
     m_vid.bg1.setPanning(vec(-32, -32));
 
@@ -39,12 +39,14 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
 */
 void GameCube::reset()
 {
+    m_isMiniMap = false;
+    
     //m_x = 0;
     //m_y = 0;
     //m_isOn = false;
 
     //m_vid.bg1.eraseMask();
-    m_vid.bg1.fillMask(vec(0,0), vec(10,10));
+    //m_vid.bg1.fillMask(vec(0,0), vec(10,10));
     //m_vid.bg1.fill(Transparent);
     m_north = TOP;
 
@@ -59,8 +61,8 @@ void GameCube::fillBackground()
     draw.image(vec(0,0), Emptiness);
     draw.erase();
     BG1Drawable &draw1 = m_vid.bg1;
-    draw1.fill(Transparent);
-    //draw1.erase();
+    //draw1.fill(Transparent);
+    draw1.erase();
 }
 
 void GameCube::highlight()
@@ -209,9 +211,25 @@ void GameCube::undoHighlight()
 
 void GameCube::render()
 {
-    fillBackground();
-	MapGen::drawMap(this);
-    visitAndDrawItems();
+
+    CubeID cube(m_id);
+    auto accel = cube.accel();
+
+    if(abs(accel.x) > 40 || abs(accel.y) > 40)
+    {
+        fillBackground();
+        LOG("Accels are %d %d %d, drawing mini map", accel.x, accel.y, accel.z);
+        MapGen::drawMiniMap(this);
+    }
+    else
+    {
+        fillBackground();
+        MapGen::drawMap(this);
+        visitAndDrawItems();
+    }
+
+    //drawCoord();
+    //updateRotation();
 }
 
 int GameCube::clusterSize()

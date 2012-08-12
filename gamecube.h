@@ -16,7 +16,7 @@ class GameCube
         bool m_isOn;
 
         Side m_north;
-
+        bool m_isMiniMap;
         Rotation m_rotation;
         int m_x, m_y;
         CubeID m_cube;

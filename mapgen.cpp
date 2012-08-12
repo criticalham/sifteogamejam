@@ -23,7 +23,7 @@ namespace MapGen
 
 	float smoothNoise(int x, int y)
 	{
-#if 0	// no smoothing
+#if 1	// no smoothing
 		float n = noise2(x,y);
 #else
 		float n = ( noise2(x-1, y-1)+noise2(x+1, y-1)+noise2(x-1, y+1)+noise2(x+1, y+1) ) * 0.0625; // corners
@@ -81,5 +81,15 @@ namespace MapGen
 		draw.image(vec(12,4), vec(4,8), getImage(gc->m_x+1, gc->m_y), vec(0,0));		// center right
 		draw.image(vec(12,12), vec(4,4), getImage(gc->m_x+1, gc->m_y+1), vec(0,0));	// bottom right
 	}
+
+    void drawMiniMap(GameCube* gc)
+    {
+        BG0Drawable &draw = gc->m_vid.bg0;
+        draw.fill(vec(0,0), vec(1,16), Highlight);
+        draw.fill(vec(0,0), vec(16,1), Highlight);
+        draw.fill(vec(15,0), vec(1,16), Highlight);
+        draw.fill(vec(0,15), vec(16,1), Highlight);
+    }
 }
 #endif
+
