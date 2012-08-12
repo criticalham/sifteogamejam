@@ -24,7 +24,8 @@ public:
 
 private:
     void restartGame();
-
+    void generateItems();
+    void debugWorld();
     GameCube m_gameCubes[CUBE_ALLOCATION];
 
     // Meta game state
@@ -40,6 +41,7 @@ private:
     int keyY;
     int chestX;
     int chestY;
+    int worldObjects[16][16];
 };
 
 extern Game g_game;

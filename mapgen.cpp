@@ -90,5 +90,23 @@ namespace MapGen
         draw.fill(vec(15,0), vec(1,16), Highlight);
         draw.fill(vec(0,15), vec(16,1), Highlight);
     }
+
+    AssetImage intToAsset(int i)
+    {
+        switch(i)
+        {
+            case 1:
+                return Boulder;
+                break;
+            case 2:
+                return FlowerRed;
+                break;
+            case 3:
+                return FlowerBlue;
+                break;
+            default:
+                return Boulder;
+        }
+    }
 }
 #endif

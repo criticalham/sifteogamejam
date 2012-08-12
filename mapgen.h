@@ -9,6 +9,7 @@ namespace MapGen
 {
 	void drawMap(GameCube* gc);
 	void drawMiniMap(GameCube* gc);
+	AssetImage intToAsset(int i);
 };
 
 #endif

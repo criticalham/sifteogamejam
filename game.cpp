@@ -5,8 +5,16 @@
 #include "gamecube.h"
 #include <sifteo.h>
 #include <sifteo/audio.h>
+#include "mapgen.h"
 
 #define DEBUG
+
+#define BOULDER_ID 1
+#define RED_FLOWER_ID 2
+#define BLUE_FLOWER_ID 3
+#define NUM_BOULDERS 3
+#define NUM_RED_FLOWERS 5
+#define NUM_BLUE_FLOWERS 2
 
 void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
 {
@@ -16,12 +24,13 @@ void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
     LOG("init() completed\n");
 }
 
-void Game::reset()
+void Game::generateItems()
 {
-    foundKey = false;
-    foundChest = false;
-    gotKey = false;
-    gotChest = false;
+    int i, x, y;
+    for (i=0; i < 16*16; i++)
+    {
+        worldObjects[i%16][i/16] = 0;
+    }
 
     do
     {
@@ -33,6 +42,83 @@ void Game::reset()
         chestX = Random().randrange(16) * 2;
         chestY = Random().randrange(16) * 2;
     } while (positionVisible(chestX, chestY));
+
+    for (i=0; i < NUM_BOULDERS; i++)
+    {
+        x = Random().randrange(16);
+        y = Random().randrange(16);
+        if (! worldObjects[x][y] && x != keyX && y != keyY && x != chestX && y != chestY)
+        {
+            worldObjects[x][y] = BOULDER_ID;
+            LOG("Boulder at %d, %d\n", x*2, y*2);
+        }
+        else
+        {
+            i--;
+        }
+    }
+    for (i=0; i < NUM_RED_FLOWERS; i++)
+    {
+        x = Random().randrange(16);
+        y = Random().randrange(16);
+        if (! worldObjects[x][y] && x != keyX && y != keyY && x != chestX && y != chestY)
+        {
+            worldObjects[x][y] = RED_FLOWER_ID;
+            LOG("RedFlower at %d, %d\n", x*2, y*2);
+        }
+        else
+        {
+            i--;
+        }
+    }
+    for (i=0; i < NUM_BLUE_FLOWERS; i++)
+    {
+        x = Random().randrange(16);
+        y = Random().randrange(16);
+        if (! worldObjects[x][y] && x != keyX && y != keyY && x != chestX && y != chestY)
+        {
+            worldObjects[x][y] = BLUE_FLOWER_ID;
+            LOG("BlueFlower at %d, %d\n", x*2, y*2);
+        }
+        else
+        {
+            i--;
+        }
+    }
+    debugWorld();
+}
+
+void Game::debugWorld()
+{
+    int i;
+    LOG("World objects: ");
+    for (i=0; i < 16*16; i++)
+    {
+        if (i%16 == 0) LOG("\n");
+        if (positionVisible(i%16, i/16)) LOG("*");
+        else LOG("%d", worldObjects[i%16][i/16]);
+    }
+}
+
+void Game::reset()
+{
+    foundKey = false;
+    foundChest = false;
+    gotKey = false;
+    gotChest = false;
+    generateItems();
+
+    /*do
+    {
+        keyX = Random().randrange(16) * 2;
+        keyY = Random().randrange(16) * 2;
+    } while (positionVisible(keyX, keyY));
+    do
+    {
+        chestX = Random().randrange(16) * 2;
+        chestY = Random().randrange(16) * 2;
+    } while (positionVisible(chestX, chestY));
+    */
 }
 
 void Game::restartGame()
@@ -65,6 +151,13 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
     int y = gameCube->m_y;
     BG1Drawable& draw = gameCube->m_vid.bg1;
 
+    LOG("World object: %d", worldObjects[x/2][y/2]);
+    if (worldObjects[x/2][y/2])
+    {
+        draw.maskedImage(MapGen::intToAsset(worldObjects[x/2][y/2]), Transparent);
+        LOG("DRAWING IMAGE %d", worldObjects[x/2][y/2]);
+    }
+
     if(keyX == x && keyY == y)
     {
         foundKey = true;
@@ -93,6 +186,8 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
     #endif
 
     draw.setPanning(vec(-32, -32));
+
+    //debugWorld();
 }
 
 /**
