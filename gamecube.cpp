@@ -84,7 +84,7 @@ void GameCube::highlightRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
 
     updateRotation(m_rotation);
 
-    if (neighborhood.hasNeighborAt(TOP))
+    if (neighborhood.hasNeighborAt(TOP) && neighborhood.neighborAt(TOP) < CUBE_ALLOCATION)
     {
         gameCubes[neighborhood.neighborAt(TOP)].highlightRecursive(seenCubes);
     }
@@ -93,7 +93,7 @@ void GameCube::highlightRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
         drawTopBorder();
     }
     
-    if (neighborhood.hasNeighborAt(BOTTOM))
+    if (neighborhood.hasNeighborAt(BOTTOM) && neighborhood.neighborAt(BOTTOM) < CUBE_ALLOCATION)
     {
         gameCubes[neighborhood.neighborAt(BOTTOM)].highlightRecursive(seenCubes);
     }
@@ -102,7 +102,7 @@ void GameCube::highlightRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
         drawBottomBorder();
     }
     
-    if (neighborhood.hasNeighborAt(LEFT))
+    if (neighborhood.hasNeighborAt(LEFT) && neighborhood.neighborAt(LEFT) < CUBE_ALLOCATION)
     {
         gameCubes[neighborhood.neighborAt(LEFT)].highlightRecursive(seenCubes);
     }
@@ -111,7 +111,7 @@ void GameCube::highlightRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
         drawLeftBorder();
     }
     
-    if (neighborhood.hasNeighborAt(RIGHT))
+    if (neighborhood.hasNeighborAt(RIGHT) && neighborhood.neighborAt(RIGHT) < CUBE_ALLOCATION)
     {
         gameCubes[neighborhood.neighborAt(RIGHT)].highlightRecursive(seenCubes);
     }
@@ -234,22 +234,34 @@ int GameCube::clusterSizeRecursive(int &total, BitArray<CUBE_ALLOCATION> &seenCu
     Neighborhood neighborhood(m_id);
     if (neighborhood.hasNeighborAt(TOP))
     {
-        gameCubes[neighborhood.neighborAt(TOP)].clusterSizeRecursive(total, seenCubes);
+        if (neighborhood.neighborAt(TOP) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(TOP)].clusterSizeRecursive(total, seenCubes);
+        }
     }
     
     if (neighborhood.hasNeighborAt(BOTTOM))
     {
-        gameCubes[neighborhood.neighborAt(BOTTOM)].clusterSizeRecursive(total, seenCubes);
+        if (neighborhood.neighborAt(BOTTOM) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(BOTTOM)].clusterSizeRecursive(total, seenCubes);
+        }
     }
     
     if (neighborhood.hasNeighborAt(LEFT))
     {
-        gameCubes[neighborhood.neighborAt(LEFT)].clusterSizeRecursive(total, seenCubes);
+        if (neighborhood.neighborAt(LEFT) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(LEFT)].clusterSizeRecursive(total, seenCubes);
+        }
     }
     
     if (neighborhood.hasNeighborAt(RIGHT))
     {
-        gameCubes[neighborhood.neighborAt(RIGHT)].clusterSizeRecursive(total, seenCubes);
+        if (neighborhood.neighborAt(RIGHT) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(RIGHT)].clusterSizeRecursive(total, seenCubes);
+        }
     }
 
     return total++;
@@ -287,22 +299,34 @@ void GameCube::shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
 
     if (neighborhood.hasNeighborAt(TOP))
     {
-        gameCubes[neighborhood.neighborAt(TOP)].shutOffRecursive(seenCubes);
+        if (neighborhood.neighborAt(TOP) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(TOP)].shutOffRecursive(seenCubes);
+        }
     }
     
     if (neighborhood.hasNeighborAt(BOTTOM))
     {
-        gameCubes[neighborhood.neighborAt(BOTTOM)].shutOffRecursive(seenCubes);
+        if (neighborhood.neighborAt(BOTTOM) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(BOTTOM)].shutOffRecursive(seenCubes);
+        }
     }
     
     if (neighborhood.hasNeighborAt(LEFT))
     {
-        gameCubes[neighborhood.neighborAt(LEFT)].shutOffRecursive(seenCubes);
+        if (neighborhood.neighborAt(LEFT) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(LEFT)].shutOffRecursive(seenCubes);
+        }
     }
     
     if (neighborhood.hasNeighborAt(RIGHT))
     {
-        gameCubes[neighborhood.neighborAt(RIGHT)].shutOffRecursive(seenCubes);
+        if (neighborhood.neighborAt(RIGHT) < CUBE_ALLOCATION)
+        {
+            gameCubes[neighborhood.neighborAt(RIGHT)].shutOffRecursive(seenCubes);
+        }
     }
 }
 
@@ -578,22 +602,34 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
 
         if (currentNeighborhood.hasNeighborAt(TOP))
         {
-            gameCubes[currentNeighborhood.neighborAt(TOP)].turnOnRecursive(m_id, seenCubes);
+            if (currentNeighborhood.neighborAt(TOP) < CUBE_ALLOCATION)
+            {
+                gameCubes[currentNeighborhood.neighborAt(TOP)].turnOnRecursive(m_id, seenCubes);
+            }
         }
         
         if (currentNeighborhood.hasNeighborAt(BOTTOM))
         {
-            gameCubes[currentNeighborhood.neighborAt(BOTTOM)].turnOnRecursive(m_id, seenCubes);
+            if (currentNeighborhood.neighborAt(BOTTOM) < CUBE_ALLOCATION)
+            {
+                gameCubes[currentNeighborhood.neighborAt(BOTTOM)].turnOnRecursive(m_id, seenCubes);
+            }
         }
         
         if (currentNeighborhood.hasNeighborAt(LEFT))
         {
-            gameCubes[currentNeighborhood.neighborAt(LEFT)].turnOnRecursive(m_id, seenCubes);
+            if (currentNeighborhood.neighborAt(LEFT) < CUBE_ALLOCATION)
+            {
+                gameCubes[currentNeighborhood.neighborAt(LEFT)].turnOnRecursive(m_id, seenCubes);
+            }
         }
         
         if (currentNeighborhood.hasNeighborAt(RIGHT))
         {
-            gameCubes[currentNeighborhood.neighborAt(RIGHT)].turnOnRecursive(m_id, seenCubes);
+            if (currentNeighborhood.neighborAt(RIGHT) < CUBE_ALLOCATION)
+            {
+                gameCubes[currentNeighborhood.neighborAt(RIGHT)].turnOnRecursive(m_id, seenCubes);
+            }
         }
     }
 
@@ -626,26 +662,38 @@ bool GameCube::isConnectedToRecursive(int cubeID, BitArray<CUBE_ALLOCATION> &see
 
     if (neighborhood.hasNeighborAt(TOP))
     {
-        foundCubeID = gameCubes[neighborhood.neighborAt(TOP)].isConnectedToRecursive(cubeID, seenCubes);
-        if (foundCubeID) { return true; }
+        if (neighborhood.neighborAt(TOP) < CUBE_ALLOCATION)
+        {
+            foundCubeID = gameCubes[neighborhood.neighborAt(TOP)].isConnectedToRecursive(cubeID, seenCubes);
+            if (foundCubeID) { return true; }
+        }
     }
     
     if (neighborhood.hasNeighborAt(BOTTOM))
     {
-        foundCubeID = gameCubes[neighborhood.neighborAt(BOTTOM)].isConnectedToRecursive(cubeID, seenCubes);
-        if (foundCubeID) { return true; }
+        if (neighborhood.neighborAt(BOTTOM) < CUBE_ALLOCATION)
+        {
+            foundCubeID = gameCubes[neighborhood.neighborAt(BOTTOM)].isConnectedToRecursive(cubeID, seenCubes);
+            if (foundCubeID) { return true; }
+        }
     }
     
     if (neighborhood.hasNeighborAt(LEFT))
     {
-        foundCubeID = gameCubes[neighborhood.neighborAt(LEFT)].isConnectedToRecursive(cubeID, seenCubes);
-        if (foundCubeID) { return true; }
+        if (neighborhood.neighborAt(LEFT) < CUBE_ALLOCATION)
+        {
+            foundCubeID = gameCubes[neighborhood.neighborAt(LEFT)].isConnectedToRecursive(cubeID, seenCubes);
+            if (foundCubeID) { return true; }
+        }
     }
     
     if (neighborhood.hasNeighborAt(RIGHT))
     {
-        foundCubeID = gameCubes[neighborhood.neighborAt(RIGHT)].isConnectedToRecursive(cubeID, seenCubes);
-        if (foundCubeID) { return true; }
+        if (neighborhood.neighborAt(RIGHT) < CUBE_ALLOCATION)
+        {
+            foundCubeID = gameCubes[neighborhood.neighborAt(RIGHT)].isConnectedToRecursive(cubeID, seenCubes);
+            if (foundCubeID) { return true; }
+        }
     }
 
     return false;

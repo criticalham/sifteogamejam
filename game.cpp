@@ -64,7 +64,9 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         foundKey = true;
 
         if(!gotKey)
+        {
             draw.maskedImage(Key, Emptiness);
+        }
 
         LOG("Game key found!\n");
     }
