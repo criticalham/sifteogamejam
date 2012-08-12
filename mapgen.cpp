@@ -103,7 +103,7 @@ namespace MapGen
 		draw.image(vec(12,12), vec(4,4), getImage(gc->m_x+1, gc->m_y+1), vec(0,0));	// bottom right
 	}
 
-    AssetImage intToAsset(int i)
+    PinnedAssetImage intToAsset(int i)
     {
         switch(i)
         {

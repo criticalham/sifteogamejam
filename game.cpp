@@ -42,8 +42,8 @@ bool Game::itemInRange(UInt2 objectPos, UInt2 targetPos, int radius)
     int dy = objectPos.y - targetPos.y;
     if (dx*dx + dy*dy <= radius*radius) return true;
 
-    dx = (16-dx)%16;
-    dy = (16-dy)%16;
+    dx = (MAPSIZE-dx)%MAPSIZE;
+    dy = (MAPSIZE-dy)%MAPSIZE;
     return dx*dx + dy*dy <= radius*radius;
 }
 
@@ -64,30 +64,30 @@ void Game::generateItems()
 {
     int i, x, y, tries;
     UInt2 randomPos;
-    for (i=0; i < 16*16; i++)
+    for (i=0; i < MAPSIZE*MAPSIZE; i++)
     {
-        worldObjects[i%16][i/16] = 0;
+        worldObjects[i%MAPSIZE][i/MAPSIZE] = 0;
     }
 
     do
     {
-        keyX = Random().randrange(16) * 2;
-        keyY = Random().randrange(16) * 2;
+        keyX = Random().randrange(MAPSIZE/2) * 2;
+        keyY = Random().randrange(MAPSIZE/2) * 2;
     } while (positionVisible(keyX, keyY));
     do
     {
-        chestX = Random().randrange(16) * 2;
-        chestY = Random().randrange(16) * 2;
+        chestX = Random().randrange(MAPSIZE/2) * 2;
+        chestY = Random().randrange(MAPSIZE/2) * 2;
     } while (positionVisible(chestX, chestY));
     tries = 0;
     for (i=0; i < NUM_BOULDERS; i++)
     {
-        randomPos = coordOnDonut(vec(keyX/2, keyY/2), BOULDER_SPAWN_MIN_RADIUS, BOULDER_SPAWN_MAX_RADIUS);
+        randomPos = coordOnDonut(vec(keyX, keyY), BOULDER_SPAWN_MIN_RADIUS, BOULDER_SPAWN_MAX_RADIUS);
         x = randomPos.x;
-        if (x < 0) x += 16;
+        if (x < 0) x += MAPSIZE;
         y = randomPos.y;
-        if (y < 0) y += 16;
-        if (! worldObjects[x][y] && !itemInRange(vec(chestX/2, chestY/2), vec(x, y), BOULDER_SPAWN_MIN_RADIUS))
+        if (y < 0) y += MAPSIZE;
+        if (! worldObjects[x][y] && !itemInRange(vec(chestX, chestY), randomPos, BOULDER_SPAWN_MIN_RADIUS))
         {
             worldObjects[x][y] = BOULDER_ID;
         }
@@ -103,10 +103,10 @@ void Game::generateItems()
     {
         randomPos = coordOnDonut(vec(keyX/2, keyY/2), RED_FLOWER_SPAWN_MIN_RADIUS, RED_FLOWER_SPAWN_MAX_RADIUS);
         x = randomPos.x;
-        if (x < 0) x += 16;
+        if (x < 0) x += MAPSIZE;
         y = randomPos.y;
-        if (y < 0) y += 16;
-        if (! worldObjects[x][y] && x != chestX/2 && y != chestY/2)
+        if (y < 0) y += MAPSIZE;
+        if (! worldObjects[x][y] && x != chestX && y != chestY)
         {
             worldObjects[x][y] = RED_FLOWER_ID;
         }
@@ -122,10 +122,10 @@ void Game::generateItems()
     {
         randomPos = coordOnDonut(vec(chestX/2, chestY/2), BLUE_FLOWER_SPAWN_MIN_RADIUS, BLUE_FLOWER_SPAWN_MAX_RADIUS);
         x = randomPos.x;
-        if (x < 0) x += 16;
+        if (x < 0) x += MAPSIZE;
         y = randomPos.y;
-        if (y < 0) y += 16;
-        if (! worldObjects[x][y] && x != keyX/2 && y != keyY/2)
+        if (y < 0) y += MAPSIZE;
+        if (! worldObjects[x][y] && x != keyX && y != keyY)
         {
             worldObjects[x][y] = BLUE_FLOWER_ID;
         }
@@ -143,13 +143,13 @@ void Game::debugWorld()
 {
     int i;
     LOG("World objects: ");
-    for (i=0; i < 16*16; i++)
+    for (i=0; i < MAPSIZE*MAPSIZE; i++)
     {
-        if (i%16 == 0) LOG("\n");
-        if (positionVisible(i%16, i/16)) LOG("*");
-        else if (keyX/2 == i%16 && keyY/2 == i/16) LOG("`");
-        else if (chestX/2 == i%16 && chestY/2 == i/16) LOG(".");
-        else LOG("%d", worldObjects[i%16][i/16]);
+        if (i%MAPSIZE == 0) LOG("\n");
+        if (positionVisible(i%MAPSIZE, i/MAPSIZE)) LOG("*");
+        else if (keyX/2 == i%MAPSIZE && keyY/2 == i/MAPSIZE) LOG("`");
+        else if (chestX/2 == i%MAPSIZE && chestY/2 == i/MAPSIZE) LOG(".");
+        else LOG("%d", worldObjects[i%MAPSIZE][i/MAPSIZE]);
     }
 }
 
@@ -160,18 +160,6 @@ void Game::reset()
     gotKey = false;
     gotChest = false;
     generateItems();
-
-    /*do
-    {
-        keyX = Random().randrange(16) * 2;
-        keyY = Random().randrange(16) * 2;
-    } while (positionVisible(keyX, keyY));
-    do
-    {
-        chestX = Random().randrange(16) * 2;
-        chestY = Random().randrange(16) * 2;
-    } while (positionVisible(chestX, chestY));
-    */
 }
 
 void Game::restartGame()
@@ -197,6 +185,94 @@ void Game::run()
     System::paint();
 }
 
+void Game::drawWorldObjects(GameCube *gameCube, int x, int y)
+{
+    gameCube->m_vid.sprites.erase();
+
+    int currentX, currentY;
+
+    // TOP LEFT
+    currentX = ((x-1) + MAPSIZE) % MAPSIZE;
+    currentY = ((y-1) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[0].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[0].move(-32, 32);
+    }
+
+    // TOP CENTER
+    currentX = ((x+0) + MAPSIZE) % MAPSIZE;
+    currentY = ((y-1) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[1].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[1].move(32, 32);
+    }
+
+    // TOP RIGHT
+    currentX = ((x+1) + MAPSIZE) % MAPSIZE;
+    currentY = ((y-1) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[2].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[2].move(96, 32);
+    }
+
+    // CENTER LEFT
+    currentX = ((x-1) + MAPSIZE) % MAPSIZE;
+    currentY = ((y+0) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[0].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[0].move(-32, 32);
+    }
+
+    // CENTER
+    currentX = ((x+0) + MAPSIZE) % MAPSIZE;
+    currentY = ((y+0) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[1].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[1].move(32, 32);
+    }
+
+    // CENTER RIGHT
+    currentX = ((x+1) + MAPSIZE) % MAPSIZE;
+    currentY = ((y+0) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[2].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[2].move(96, 32);
+    }
+
+    // BOTTOM LEFT
+    currentX = ((x-1) + MAPSIZE) % MAPSIZE;
+    currentY = ((y+1) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[0].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[0].move(-32, 32);
+    }
+
+    // BOTTOM CENTER
+    currentX = ((x+0) + MAPSIZE) % MAPSIZE;
+    currentY = ((y+1) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[1].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[1].move(32, 32);
+    }
+
+    // BOTTOM RIGHT
+    currentX = ((x+1) + MAPSIZE) % MAPSIZE;
+    currentY = ((y+1) + MAPSIZE) % MAPSIZE;
+    if (worldObjects[currentX][currentY])
+    {
+        gameCube->m_vid.sprites[2].setImage(MapGen::intToAsset(worldObjects[currentX][currentY]));
+        gameCube->m_vid.sprites[2].move(96, 32);
+    }
+}
+
 /**
   * Marks that a given location has been visited
   */
@@ -207,18 +283,13 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
     int y = gameCube->m_y;
     BG1Drawable& draw = gameCube->m_vid.bg1;
 
+    drawWorldObjects(gameCube, x, y);
+
     if(!m_visited[x][y])
     {
         // Play a sound effect for finding a new tile?
         LOG("Found unvisited tile.\n");
         m_visited[x][y] = true;
-    }
-
-    LOG("World object: %d\n", worldObjects[x/2][y/2]);
-    if (worldObjects[x/2][y/2])
-    {
-        draw.maskedImage(MapGen::intToAsset(worldObjects[x/2][y/2]), Transparent);
-        LOG("DRAWING IMAGE %d\n", worldObjects[x/2][y/2]);
     }
 
     if(keyX == x && keyY == y)
@@ -296,7 +367,7 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
             gameCube->highlight();
         }
 
-        draw.setPanning(vec(-32, -32));
+        //draw.setPanning(vec(-32, -32));
     }
 }
 

@@ -160,27 +160,38 @@ private:
 
         if (cube1->m_isOn && cube2->m_isOn)
         {
-            //if (cube1->isConnectedTo(cube2)) return;
-            int cube1ClusterSize = cube1->clusterSize();
-            int cube2ClusterSize = cube2->clusterSize();
-
-            if ((cube1ClusterSize > cube2ClusterSize) || ((cube1ClusterSize == cube2ClusterSize && cube1->isConnectedTo(mainCube))))
+            bool cube1IsConnected = cube1->isConnectedTo(mainCube);
+            bool cube2IsConnected = cube2->isConnectedTo(mainCube);
+            if (!cube1IsConnected || !cube2IsConnected)
             {
-                if(!cube2->isConnectedTo(mainCube))
+                int cube1ClusterSize = cube1->clusterSize();
+                int cube2ClusterSize = cube2->clusterSize();
+
+                if ((cube1ClusterSize > cube2ClusterSize) || ((cube1ClusterSize == cube2ClusterSize && cube1->isConnectedTo(mainCube))))
                 {
-                    LOG("Shut off cube %d\n", cube2->m_id);
                     cube2->shutOff();
+                    cube1->highlight();
+
+                    if (mainCube == secondID)
+                    {
+                        mainCube = firstID;
+                    }
                 }
-                cube1->highlight();
+                else
+                {
+                    cube1->shutOff();
+                    cube2->highlight();
+
+                    if (mainCube == firstID)
+                    {
+                        mainCube = secondID;
+                    }
+                }
             }
             else
             {
-                if(!cube1->isConnectedTo(mainCube))
-                {
-                    LOG("Shut off cube %d\n", cube1->m_id);
-                    cube1->shutOff();
-                }
-                cube2->highlight();
+                // Just redraw the lines.
+                cube1->highlight();
             }
         }
         else if ((cube1->m_isOn && !cube2->m_isOn) || (!cube1->m_isOn && cube2->m_isOn))
@@ -213,6 +224,17 @@ private:
 
         if ((cube1->m_isOn && !cube2->m_isOn) || (!cube1->m_isOn && cube2->m_isOn))
         {
+            if (cube1->m_isMiniMap)
+            {
+                cube1->m_isMiniMap = false;
+                cube1->shutOff();
+            }
+            if (cube2->m_isMiniMap)
+            {
+                cube2->m_isMiniMap = false;
+                cube2->shutOff();
+            }
+
             GameCube *referenceCube;
             GameCube *newCube;
 
@@ -268,10 +290,22 @@ void main()
 
     AudioTracker::play(Music);
 
+    int renderCount = 0;
+
     // We're entirely event-driven. Everything is
     // updated by SensorListener's event callbacks.
     while (1)
     {
+        if (renderCount < 2)
+        {
+          // hack to fix initial cube image: render a few extra times
+          ++renderCount;
+          for (int cubeIndex = 0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
+          {
+              if(gameCubes[cubeIndex].m_isOn)
+                gameCubes[cubeIndex].render();
+          }
+        }
         g_game.run();
     }
 }
