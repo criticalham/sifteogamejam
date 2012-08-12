@@ -37,10 +37,10 @@ void GameCube::fillBackground()
 void GameCube::highlight()
 {
     BG0Drawable &draw = m_vid.bg0;
-    //draw.fill(vec(0,0), vec(1,16), Water);
-    //draw.fill(vec(0,0), vec(16,1), Icon);
-    //draw.fill(vec(15,0), vec(1,16), Icon);
-    //draw.fill(vec(0,15), vec(16,1), Icon);
+    //draw.fill(vec(0,0), vec(1,16), Emptiness);
+    //draw.fill(vec(0,0), vec(16,1), Emptiness);
+    //draw.fill(vec(15,0), vec(1,16), Emptiness);
+    //draw.fill(vec(0,15), vec(16,1), Emptiness);
 }
 
 void GameCube::render()
@@ -103,6 +103,7 @@ void GameCube::drawCoord()
         << m_y << ")";
 
     BG1Drawable &draw = m_vid.bg1;
+    draw.
     draw.text(vec(0,0), Font, str);
 }
 int i = 0;

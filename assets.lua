@@ -2,6 +2,8 @@
 IconAssets = group{quality=9.95}
 Icon = image{"icon.png"}
 
+Music = tracker{"sv_ttt.xm"}
+
 GameAssets = group{}
 Dirt = image{"art/dirt.png"}
 GrassDark = image{"art/grass_dark.png"}
