@@ -219,7 +219,7 @@ void GameCube::render()
     {
         fillBackground();
         LOG("Accels are %d %d %d, drawing mini map", accel.x, accel.y, accel.z);
-        MapGen::drawMiniMap(this);
+        g_game.drawMiniMap(this);
     }
     else
     {
@@ -459,6 +459,8 @@ int GameCube::directionTo(int cubeID)
 
 void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &seenCubes)
 {
+    g_game.m_referenceCubeID = referenceCubeID;
+
     if (seenCubes.test(m_id))
     {
         return;
