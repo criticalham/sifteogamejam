@@ -71,7 +71,7 @@ private:
         //onTouch(cube);
         //drawNeighbors(cube);
 
-        gCube.fillBackground(0);
+        gCube.fillBackground();
 
         if (id == 0)
         {
@@ -149,7 +149,7 @@ private:
         }
         
 
-/*
+        /*
         GameCube *cube1 = &gameCubes[firstID];
         GameCube *cube2 = &gameCubes[secondID];
 
@@ -263,9 +263,8 @@ private:
         }
         */
 
-        
         prevMainCube = mainCube;
-        gameCubes[mainCube].fillBackground(0);
+        gameCubes[mainCube].fillBackground();
         if (firstID == mainCube)
         {
             mainCube = secondID;

@@ -1588,13 +1588,13 @@ const uint16_t Key_data[] = {
     0xaa5b,0x47cc,0xb04d,0x553c,0x68c8,0xb46e,0x49d8,0x3d53,
 };
 
-extern const uint16_t Empty_data[];
+extern const uint16_t Emptiness_data[];
 
-extern const Sifteo::PinnedAssetImage Empty = {{
+extern const Sifteo::PinnedAssetImage Emptiness = {{
     /* group    */ reinterpret_cast<uintptr_t>(&GameAssets),
-    /* width    */ 8,
-    /* height   */ 8,
-    /* frames   */ 1,
+    /* width    */ 1,
+    /* height   */ 1,
+    /* frames   */ 64,
     /* format   */ _SYS_AIF_PINNED,
     /* reserved */ 0,
     /* pData    */ 0

@@ -2,6 +2,8 @@
 *.o
 *.d
 
+main.d
+
 .DS_Store
 
 art/tile_reference.png

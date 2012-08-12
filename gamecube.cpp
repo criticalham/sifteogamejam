@@ -24,12 +24,13 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     m_y = 0;
     m_isOn = false;
 
-    fillBackground(0);
+    fillBackground();
 }
 
-void GameCube::fillBackground(unsigned color)
+void GameCube::fillBackground()
 {
     BG0Drawable &draw = m_vid.bg0;
+    draw.image(vec(0,0), Emptiness);
     draw.erase();
 }
 
@@ -44,7 +45,7 @@ void GameCube::highlight()
 
 void GameCube::render()
 {
-    fillBackground(0);
+    fillBackground();
 	MapGen::drawMap(this);
     drawCoord();
 

@@ -21,5 +21,5 @@ extern const Sifteo::AssetImage ChestClosed;
 extern const Sifteo::AssetImage FlowerRed;
 extern const Sifteo::AssetImage FlowerBlue;
 extern const Sifteo::AssetImage Key;
-extern const Sifteo::PinnedAssetImage Empty;
+extern const Sifteo::PinnedAssetImage Emptiness;
 extern const Sifteo::PinnedAssetImage Font;
