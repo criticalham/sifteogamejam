@@ -14,13 +14,13 @@
 #define RED_FLOWER_ID 2
 #define BLUE_FLOWER_ID 3
 #define NUM_BOULDERS 30
-#define NUM_RED_FLOWERS 8
-#define NUM_BLUE_FLOWERS 8
-#define BOULDER_SPAWN_MIN_RADIUS 6
+#define NUM_RED_FLOWERS 10
+#define NUM_BLUE_FLOWERS 10
+#define BOULDER_SPAWN_MIN_RADIUS 5
 #define BOULDER_SPAWN_MAX_RADIUS 8
-#define BLUE_FLOWER_SPAWN_MIN_RADIUS 2
+#define BLUE_FLOWER_SPAWN_MIN_RADIUS 1
 #define BLUE_FLOWER_SPAWN_MAX_RADIUS 3
-#define RED_FLOWER_SPAWN_MIN_RADIUS 2
+#define RED_FLOWER_SPAWN_MIN_RADIUS 1
 #define RED_FLOWER_SPAWN_MAX_RADIUS 3
 
 void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
@@ -53,8 +53,8 @@ UInt2 Game::coordOnDonut(UInt2 pos, int minRadius, int maxRadius)
     int dx, dy;
     do
     {
-        dy = Random().randrange(-maxRadius, maxRadius);
-        dx = Random().randrange(-maxRadius, maxRadius);
+        dy = Random().randrange(maxRadius*2) - maxRadius;
+        dx = Random().randrange(maxRadius*2) - maxRadius;
         //LOG("x: %d\ty: %d\tmin_radius: %d\tmax_radius: %d\t--\t%d, %d, %d\n", dx, dy, minRadius, maxRadius, dx*dx + dy*dy, maxRadius*maxRadius, minRadius*minRadius);
     } while (dx*dx + dy*dy > maxRadius*maxRadius || dx*dx + dy*dy < minRadius*minRadius);
     return vec((pos.x + dx)%16, (pos.y + dy)%16);
@@ -62,7 +62,7 @@ UInt2 Game::coordOnDonut(UInt2 pos, int minRadius, int maxRadius)
 
 void Game::generateItems()
 {
-    int i, x, y;
+    int i, x, y, tries;
     UInt2 randomPos;
     for (i=0; i < 16*16; i++)
     {
@@ -79,7 +79,7 @@ void Game::generateItems()
         chestX = Random().randrange(16) * 2;
         chestY = Random().randrange(16) * 2;
     } while (positionVisible(chestX, chestY));
-
+    tries = 0;
     for (i=0; i < NUM_BOULDERS; i++)
     {
         randomPos = coordOnDonut(vec(keyX/2, keyY/2), BOULDER_SPAWN_MIN_RADIUS, BOULDER_SPAWN_MAX_RADIUS);
@@ -87,19 +87,21 @@ void Game::generateItems()
         if (x < 0) x += 16;
         y = randomPos.y;
         if (y < 0) y += 16;
-        if (! worldObjects[x][y] && !itemInRange(vec(chestX/2, chestY/2), randomPos, BOULDER_SPAWN_MIN_RADIUS))
+        if (! worldObjects[x][y] && !itemInRange(vec(chestX/2, chestY/2), vec(x, y), BOULDER_SPAWN_MIN_RADIUS))
         {
             worldObjects[x][y] = BOULDER_ID;
-            LOG("Boulder at %d, %d\n", x*2, y*2);
         }
         else
         {
             i--;
+            tries++;
+            if (tries > 300) break;
         }
     }
+    tries = 0;
     for (i=0; i < NUM_RED_FLOWERS; i++)
     {
-        randomPos = coordOnDonut(vec(keyX, keyY), RED_FLOWER_SPAWN_MIN_RADIUS, RED_FLOWER_SPAWN_MAX_RADIUS);
+        randomPos = coordOnDonut(vec(keyX/2, keyY/2), RED_FLOWER_SPAWN_MIN_RADIUS, RED_FLOWER_SPAWN_MAX_RADIUS);
         x = randomPos.x;
         if (x < 0) x += 16;
         y = randomPos.y;
@@ -107,16 +109,18 @@ void Game::generateItems()
         if (! worldObjects[x][y] && x != chestX/2 && y != chestY/2)
         {
             worldObjects[x][y] = RED_FLOWER_ID;
-            LOG("RedFlower at %d, %d\n", x*2, y*2);
         }
         else
         {
             i--;
+            tries++;
+            if (tries > 300) break;
         }
     }
+    tries = 0;
     for (i=0; i < NUM_BLUE_FLOWERS; i++)
     {
-        randomPos = coordOnDonut(vec(chestX, chestY), BLUE_FLOWER_SPAWN_MIN_RADIUS, BLUE_FLOWER_SPAWN_MAX_RADIUS);
+        randomPos = coordOnDonut(vec(chestX/2, chestY/2), BLUE_FLOWER_SPAWN_MIN_RADIUS, BLUE_FLOWER_SPAWN_MAX_RADIUS);
         x = randomPos.x;
         if (x < 0) x += 16;
         y = randomPos.y;
@@ -124,11 +128,12 @@ void Game::generateItems()
         if (! worldObjects[x][y] && x != keyX/2 && y != keyY/2)
         {
             worldObjects[x][y] = BLUE_FLOWER_ID;
-            LOG("BlueFlower at %d, %d\n", x*2, y*2);
         }
         else
         {
             i--;
+            tries++;
+            if (tries > 300) break;
         }
     }
     debugWorld();
@@ -142,6 +147,8 @@ void Game::debugWorld()
     {
         if (i%16 == 0) LOG("\n");
         if (positionVisible(i%16, i/16)) LOG("*");
+        else if (keyX/2 == i%16 && keyY/2 == i/16) LOG("`");
+        else if (chestX/2 == i%16 && chestY/2 == i/16) LOG(".");
         else LOG("%d", worldObjects[i%16][i/16]);
     }
 }
