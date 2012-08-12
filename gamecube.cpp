@@ -167,6 +167,7 @@ void GameCube::setPos(int x, int y)
 {
     m_x = x;
     m_y = y;
+    LOG("Tile %d: %d, %d\n", m_id, m_x, m_y);
 }
 
 void GameCube::turnOn(int referenceCubeID)
@@ -201,7 +202,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     // Ensure the attached cube is facing the same direction as the main cube
     if (referenceNeighborhood.neighborAt(TOP) == referenceCubeID)
     {
-        setPos(referenceCube.m_x, referenceCube.m_y+1);
+        setPos(referenceCube.m_x, referenceCube.m_y+2);
 
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
@@ -222,7 +223,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     }
     else if (referenceNeighborhood.neighborAt(LEFT) == m_id)
     {
-        setPos(referenceCube.m_x-1, referenceCube.m_y);
+        setPos(referenceCube.m_x-2, referenceCube.m_y);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
@@ -243,7 +244,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
 
     else if (referenceNeighborhood.neighborAt(RIGHT) == m_id)
     {
-        setPos(referenceCube.m_x+1, referenceCube.m_y);
+        setPos(referenceCube.m_x+2, referenceCube.m_y);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
@@ -263,7 +264,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     }
     else if (referenceNeighborhood.neighborAt(BOTTOM) == m_id)
     {
-        setPos(referenceCube.m_x, referenceCube.m_y-1);
+        setPos(referenceCube.m_x, referenceCube.m_y-2);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
