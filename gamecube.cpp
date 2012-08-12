@@ -13,11 +13,13 @@ int rotToInt(Rotation r);
 
 void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motion)
 {
+    m_rotation = ROT_NORMAL;
     m_id = idIn;
     m_vid = vid;
     m_motion = motion;
     m_vid.initMode(BG0_BG1);
     m_vid.attach(m_id);
+    m_north = TOP;
 
     // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
     //m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(10,10)));
@@ -44,6 +46,7 @@ void GameCube::reset()
     //m_vid.bg1.eraseMask();
     m_vid.bg1.fillMask(vec(0,0), vec(10,10));
     //m_vid.bg1.fill(Transparent);
+    m_north = TOP;
 
     render();
     if (m_id == 0) highlight();
@@ -62,11 +65,141 @@ void GameCube::fillBackground()
 
 void GameCube::highlight()
 {
+    BitArray<CUBE_ALLOCATION> seenCubes;
+    seenCubes.clear();
+    highlightRecursive(seenCubes);
+}
+
+void GameCube::highlightRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
+{
+    if (seenCubes.test(m_id))
+    {
+        return;
+    }
+
+    seenCubes.mark(m_id);
+    LOG("Highlight: cube %d\n", m_id);
+
+    Neighborhood neighborhood(m_id);
+
+    updateRotation(m_rotation);
+
+    if (neighborhood.hasNeighborAt(TOP))
+    {
+        gameCubes[neighborhood.neighborAt(TOP)].highlightRecursive(seenCubes);
+    }
+    else
+    {
+        drawTopBorder();
+    }
+    
+    if (neighborhood.hasNeighborAt(BOTTOM))
+    {
+        gameCubes[neighborhood.neighborAt(BOTTOM)].highlightRecursive(seenCubes);
+    }
+    else
+    {
+        drawBottomBorder();
+    }
+    
+    if (neighborhood.hasNeighborAt(LEFT))
+    {
+        gameCubes[neighborhood.neighborAt(LEFT)].highlightRecursive(seenCubes);
+    }
+    else
+    {
+        drawLeftBorder();
+    }
+    
+    if (neighborhood.hasNeighborAt(RIGHT))
+    {
+        gameCubes[neighborhood.neighborAt(RIGHT)].highlightRecursive(seenCubes);
+    }
+    else
+    {
+        drawRightBorder();
+    }
+}
+
+void GameCube::drawTopBorder()
+{
     BG0Drawable &draw = m_vid.bg0;
-    draw.fill(vec(0,0), vec(1,16), Highlight);
-    draw.fill(vec(0,0), vec(16,1), Highlight);
-    draw.fill(vec(15,0), vec(1,16), Highlight);
-    draw.fill(vec(0,15), vec(16,1), Highlight);
+    switch (m_rotation)
+    {
+        default:
+            draw.fill(vec(0,0), vec(16,1), Highlight);
+            return;
+        case ROT_LEFT_90:
+            draw.fill(vec(15,0), vec(1,16), Highlight);
+            return;
+        case ROT_RIGHT_90:
+            draw.fill(vec(0,0), vec(1,16), Highlight);
+            return;
+        case ROT_180:
+            draw.fill(vec(0,15), vec(16,1), Highlight);
+            return;
+    }
+}
+
+void GameCube::drawBottomBorder()
+{
+    BG0Drawable &draw = m_vid.bg0;
+    switch (m_rotation)
+    {
+        default:
+            draw.fill(vec(0,15), vec(16,1), Highlight);
+            return;
+        case ROT_LEFT_90:
+            draw.fill(vec(0,0), vec(1,16), Highlight);
+            return;
+        case ROT_RIGHT_90:
+            draw.fill(vec(15,0), vec(1,16), Highlight);
+            return;
+        case ROT_180:
+            draw.fill(vec(0,0), vec(16,1), Highlight);
+            return;
+    }
+}
+
+void GameCube::drawLeftBorder()
+{
+    BG0Drawable &draw = m_vid.bg0;
+    switch (m_rotation)
+    {
+        default:
+            draw.fill(vec(0,0), vec(1,16), Highlight);
+            return;
+        case ROT_LEFT_90:
+            draw.fill(vec(0,0), vec(16,1), Highlight);
+            return;
+        case ROT_RIGHT_90:
+            draw.fill(vec(0,15), vec(16,1), Highlight);
+            return;
+        case ROT_180:
+            draw.fill(vec(15,0), vec(1,16), Highlight);
+            return;
+    }
+    
+}
+
+void GameCube::drawRightBorder()
+{
+    BG0Drawable &draw = m_vid.bg0;
+    switch (m_rotation)
+    {
+        default:
+            draw.fill(vec(15,0), vec(1,16), Highlight);
+            return;
+        case ROT_LEFT_90:
+            draw.fill(vec(0,15), vec(16,1), Highlight);
+            return;
+        case ROT_RIGHT_90:
+            draw.fill(vec(0,0), vec(16,1), Highlight);
+            return;
+        case ROT_180:
+            draw.fill(vec(0,0), vec(1,16), Highlight);
+            return;
+    }
 }
 
 void GameCube::undoHighlight()
@@ -79,6 +212,47 @@ void GameCube::render()
     fillBackground();
 	MapGen::drawMap(this);
     visitAndDrawItems();
+}
+
+int GameCube::clusterSize()
+{
+    int total = 0;
+    BitArray<CUBE_ALLOCATION> seenCubes;
+    seenCubes.clear();
+    return clusterSizeRecursive(total, seenCubes);
+}
+
+int GameCube::clusterSizeRecursive(int &total, BitArray<CUBE_ALLOCATION> &seenCubes)
+{
+    if (seenCubes.test(m_id))
+    {
+        return total;
+    }
+
+    seenCubes.mark(m_id);
+
+    Neighborhood neighborhood(m_id);
+    if (neighborhood.hasNeighborAt(TOP))
+    {
+        gameCubes[neighborhood.neighborAt(TOP)].clusterSizeRecursive(total, seenCubes);
+    }
+    
+    if (neighborhood.hasNeighborAt(BOTTOM))
+    {
+        gameCubes[neighborhood.neighborAt(BOTTOM)].clusterSizeRecursive(total, seenCubes);
+    }
+    
+    if (neighborhood.hasNeighborAt(LEFT))
+    {
+        gameCubes[neighborhood.neighborAt(LEFT)].clusterSizeRecursive(total, seenCubes);
+    }
+    
+    if (neighborhood.hasNeighborAt(RIGHT))
+    {
+        gameCubes[neighborhood.neighborAt(RIGHT)].clusterSizeRecursive(total, seenCubes);
+    }
+
+    return total++;
 }
 
 /**
@@ -104,7 +278,6 @@ void GameCube::shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
     }
 
     seenCubes.mark(m_id);
-
     LOG("Shutting off ID %d\n", m_id);
 
     fillBackground();
@@ -165,12 +338,13 @@ void GameCube::updateRotation(Rotation r)
     {
         m_vid.setRotation(ROT_LEFT_90);
     }*/
+    m_rotation = r;
     m_vid.setRotation(r);
 }
 
 Rotation GameCube::getRotation()
 {
-    return m_vid.rotation();
+    return m_rotation;//m_vid.rotation();
 }
 
 void GameCube::setPos(int x, int y)
@@ -187,6 +361,60 @@ void GameCube::turnOn(int referenceCubeID)
     turnOnRecursive(referenceCubeID, seenCubes);
 }
 
+int GameCube::directionTo(int cubeID)
+{
+    Neighborhood neighborhood(m_id);
+    Side connectedSide = neighborhood.sideOf(cubeID);
+
+    switch (m_north)
+    {
+        default:
+        case TOP:
+            switch (connectedSide)
+            {
+                default:
+                case TOP:    return NORTH;
+                case RIGHT:  return EAST;
+                case BOTTOM: return SOUTH;
+                case LEFT:   return WEST;
+            }
+            break;
+
+        case LEFT:
+            switch (connectedSide)
+            {
+                default:
+                case TOP:    return EAST;
+                case RIGHT:  return SOUTH;
+                case BOTTOM: return WEST;
+                case LEFT:   return NORTH;
+            }
+            break;
+
+        case BOTTOM:
+            switch (connectedSide)
+            {
+                default:
+                case TOP:    return SOUTH;
+                case RIGHT:  return WEST;
+                case BOTTOM: return NORTH;
+                case LEFT:   return EAST;
+            }
+            break;
+
+        case RIGHT:
+            switch (connectedSide)
+            {
+                default:
+                case TOP:    return WEST;
+                case RIGHT:  return NORTH;
+                case BOTTOM: return EAST;
+                case LEFT:   return SOUTH;
+            }
+            break;
+    }
+}
+
 void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &seenCubes)
 {
     if (seenCubes.test(m_id))
@@ -196,124 +424,180 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
 
     seenCubes.mark(m_id);
 
-    if (m_isOn)
-    {
-        return;
-    }
-
-    m_isOn = true;
-
     GameCube &referenceCube = gameCubes[referenceCubeID];
     Neighborhood referenceNeighborhood(referenceCube.m_cube);
     Neighborhood currentNeighborhood(m_cube);
 
-    LOG("Turning on ID %d\n", m_id);
+    if (!m_isOn)
+    {
+        m_isOn = true;
 
-    // Ensure the attached cube is facing the same direction as the main cube
-    if (referenceNeighborhood.neighborAt(TOP) == m_id)
-    {
-        setPos(referenceCube.m_x, referenceCube.m_y-2);
+        LOG("Turning on ID %d\n", m_id);
 
-        if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
+        int directionMoved = referenceCube.directionTo(m_id);
+        Side connectedSide = currentNeighborhood.sideOf(referenceCubeID);
+        switch (directionMoved)
         {
-            updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
+            default:
+            case NORTH:
+                LOG("Cube %d is north of cube %d\n", m_id, referenceCubeID);
+                setPos(referenceCube.m_x, referenceCube.m_y-2);
+                switch (connectedSide)
+                {
+                    default:
+                    case BOTTOM: m_north = TOP; break;
+                    case LEFT:   m_north = RIGHT; break;
+                    case TOP:    m_north = BOTTOM; break;
+                    case RIGHT:  m_north = LEFT; break;
+                }
+                break;
+            case EAST:
+                LOG("Cube %d is east of cube %d\n", m_id, referenceCubeID);
+                setPos(referenceCube.m_x+2, referenceCube.m_y);
+                switch (connectedSide)
+                {
+                    default:
+                    case BOTTOM: m_north = LEFT; break;
+                    case LEFT:   m_north = TOP; break;
+                    case TOP:    m_north = RIGHT; break;
+                    case RIGHT:  m_north = BOTTOM; break;
+                }
+                break;
+            case SOUTH:
+                LOG("Cube %d is south of cube %d\n", m_id, referenceCubeID);
+                setPos(referenceCube.m_x, referenceCube.m_y+2);
+                switch (connectedSide)
+                {
+                    default:
+                    case BOTTOM: m_north = BOTTOM; break;
+                    case LEFT:   m_north = LEFT; break;
+                    case TOP:    m_north = TOP; break;
+                    case RIGHT:  m_north = RIGHT; break;
+                }
+                break;
+            case WEST:
+                LOG("Cube %d is west of cube %d\n", m_id, referenceCubeID);
+                setPos(referenceCube.m_x-2, referenceCube.m_y);
+                switch (connectedSide)
+                {
+                    default:
+                    case BOTTOM: m_north = RIGHT; break;
+                    case LEFT:   m_north = BOTTOM; break;
+                    case TOP:    m_north = LEFT; break;
+                    case RIGHT:  m_north = TOP; break;
+                }
+                break;
         }
-        else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
+
+        switch (m_north)
         {
-            updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
+            default:
+            case BOTTOM: LOG("Cube %d north is BOTTOM\n", m_id); break;
+            case LEFT:   LOG("Cube %d north is LEFT\n", m_id); break;
+            case TOP:    LOG("Cube %d north is TOP\n", m_id); break;
+            case RIGHT:  LOG("Cube %d north is RIGHT\n", m_id); break;
         }
-        else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
+
+        // Ensure the attached cube is facing the same direction as the main cube
+        if (referenceNeighborhood.neighborAt(TOP) == m_id)
         {
-            updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
+            if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
+            }
         }
-        else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
+        else if (referenceNeighborhood.neighborAt(LEFT) == m_id)
         {
-            updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
+            if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
+            }
         }
-    }
-    else if (referenceNeighborhood.neighborAt(LEFT) == m_id)
-    {
-        setPos(referenceCube.m_x-2, referenceCube.m_y);
-        if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
+        else if (referenceNeighborhood.neighborAt(RIGHT) == m_id)
         {
-            updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
+            if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
+            }
         }
-        else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
+        else if (referenceNeighborhood.neighborAt(BOTTOM) == m_id)
         {
-            updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
+            if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
+            }
+            else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
+            {
+                updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
+            }
         }
-        else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
+
+        if (currentNeighborhood.hasNeighborAt(TOP))
         {
-            updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
+            gameCubes[currentNeighborhood.neighborAt(TOP)].turnOnRecursive(m_id, seenCubes);
         }
-        else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
+        
+        if (currentNeighborhood.hasNeighborAt(BOTTOM))
         {
-            updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
+            gameCubes[currentNeighborhood.neighborAt(BOTTOM)].turnOnRecursive(m_id, seenCubes);
+        }
+        
+        if (currentNeighborhood.hasNeighborAt(LEFT))
+        {
+            gameCubes[currentNeighborhood.neighborAt(LEFT)].turnOnRecursive(m_id, seenCubes);
+        }
+        
+        if (currentNeighborhood.hasNeighborAt(RIGHT))
+        {
+            gameCubes[currentNeighborhood.neighborAt(RIGHT)].turnOnRecursive(m_id, seenCubes);
         }
     }
 
-    else if (referenceNeighborhood.neighborAt(RIGHT) == m_id)
-    {
-        setPos(referenceCube.m_x+2, referenceCube.m_y);
-        if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
-        }
-        else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
-        }
-        else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
-        }
-        else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
-        }
-    }
-    else if (referenceNeighborhood.neighborAt(BOTTOM) == m_id)
-    {
-        setPos(referenceCube.m_x, referenceCube.m_y+2);
-        if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
-        }
-        else if (currentNeighborhood.neighborAt(RIGHT) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_RIGHT_90, referenceCube.getRotation()));
-        }
-        else if (currentNeighborhood.neighborAt(BOTTOM) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_180, referenceCube.getRotation()));
-        }
-        else if (currentNeighborhood.neighborAt(LEFT) == referenceCubeID)
-        {
-            updateRotation(addRotations(ROT_LEFT_90, referenceCube.getRotation()));
-        }
-    }
-    
     render();
-
-    if (currentNeighborhood.hasNeighborAt(TOP))
-    {
-        gameCubes[currentNeighborhood.neighborAt(TOP)].turnOnRecursive(m_id, seenCubes);
-    }
-    
-    if (currentNeighborhood.hasNeighborAt(BOTTOM))
-    {
-        gameCubes[currentNeighborhood.neighborAt(BOTTOM)].turnOnRecursive(m_id, seenCubes);
-    }
-    
-    if (currentNeighborhood.hasNeighborAt(LEFT))
-    {
-        gameCubes[currentNeighborhood.neighborAt(LEFT)].turnOnRecursive(m_id, seenCubes);
-    }
-    
-    if (currentNeighborhood.hasNeighborAt(RIGHT))
-    {
-        gameCubes[currentNeighborhood.neighborAt(RIGHT)].turnOnRecursive(m_id, seenCubes);
-    }
 }
 
 bool GameCube::isConnectedTo(int cubeID)

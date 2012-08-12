@@ -12,7 +12,7 @@ static Metadata M = Metadata()
     .title("Explorathon")
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
-    .cubeRange(2, 20);
+    .cubeRange(3);
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
@@ -56,7 +56,7 @@ private:
         bzero(counters[id]);
         LOG("Cube %d connected\n", id);
 
-        GameCube gCube = gameCubes[id];
+        //GameCube gCube = gameCubes[id];
         gameCubes[id].initialize(id, vid[id], motion[id]);
 
         //vid[id].initMode(BG0);
@@ -68,14 +68,14 @@ private:
         //onTouch(cube);
         //drawNeighbors(cube);
 
-        gCube.fillBackground();
+        //gameCubes[id].fillBackground();
 
         if (id == 0)
         {
             mainCube = 0;
-            gameCubes[id].render();
-            gameCubes[id].highlight();
             gameCubes[id].m_isOn = true;
+            //gameCubes[id].render();
+            //gameCubes[id].highlight();
         }
         else
         {
@@ -102,7 +102,7 @@ private:
             " (" << counters[cube].touch << ")\n";
         //vid[cube].bg0rom.text(vec(1,9), str);
 
-        g_game.handleCubeTouch(&gameCubes[id], cube.isTouching());
+        g_game.handleCubeTouch(&gameCubes[id], true);
     }
 
     void onAccelChange(unsigned id)
@@ -138,6 +138,7 @@ private:
     {
         LOG("Neighbor Remove: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
+        /*
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborRemove++;
             drawNeighbors(firstID);
@@ -146,6 +147,7 @@ private:
             counters[secondID].neighborRemove++;
             drawNeighbors(secondID);
         }
+        */
         
 
         GameCube *cube1 = &gameCubes[firstID];
@@ -153,13 +155,18 @@ private:
 
         if (cube1->m_isOn && cube2->m_isOn)
         {
-            if (cube1->m_id == mainCube || cube1->isConnectedTo(mainCube))
+            int cube1ClusterSize = cube1->clusterSize();
+            int cube2ClusterSize = cube2->clusterSize();
+
+            if ((cube1ClusterSize > cube2ClusterSize) || ((cube1ClusterSize == cube2ClusterSize && cube1->isConnectedTo(mainCube))))
             {
                 cube2->shutOff();
+                cube1->highlight();
             }
-            else if (cube2->m_id == mainCube || cube2->isConnectedTo(mainCube))
+            else
             {
                 cube1->shutOff();
+                cube2->highlight();
             }
         }
         else if ((cube1->m_isOn && !cube2->m_isOn) || (!cube1->m_isOn && cube2->m_isOn))
@@ -190,7 +197,7 @@ private:
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
-        
+        /*
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborAdd++;
             drawNeighbors(firstID);
@@ -199,9 +206,10 @@ private:
             counters[secondID].neighborAdd++;
             drawNeighbors(secondID);
         }
+        */
 
         prevMainCube = mainCube;
-        gameCubes[prevMainCube].undoHighlight();
+        //gameCubes[prevMainCube].undoHighlight();
 
         GameCube *cube1 = &gameCubes[firstID];
         GameCube *cube2 = &gameCubes[secondID];
@@ -259,7 +267,7 @@ void main()
     SensorListener sensors;
     sensors.install();
 
-    //AudioTracker::play(Music);
+    AudioTracker::play(Music);
 
     // We're entirely event-driven. Everything is
     // updated by SensorListener's event callbacks.

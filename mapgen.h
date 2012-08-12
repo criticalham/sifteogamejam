@@ -8,7 +8,6 @@ using namespace Sifteo;
 namespace MapGen
 {
 	void drawMap(GameCube* gc);
-	void drawMap(VideoBuffer& vid);
 };
 
 #endif
