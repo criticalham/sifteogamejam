@@ -31,13 +31,15 @@ void GameCube::reset()
 {
     m_x = 0;
     m_y = 0;
+    m_isOn = false;
 
-    fillBackground(0);
+    fillBackground();
 }
 
-void GameCube::fillBackground(unsigned color)
+void GameCube::fillBackground()
 {
     BG0Drawable &draw = m_vid.bg0;
+    draw.image(vec(0,0), Emptiness);
     draw.erase();
 }
 
@@ -53,7 +55,7 @@ void GameCube::highlight()
 void GameCube::render()
 {
     visit();
-    fillBackground(0);
+    fillBackground();
 	MapGen::drawMap(this);
     drawCoord();
 
@@ -70,8 +72,49 @@ void GameCube::visit()
 
 void GameCube::shutOff()
 {
+    BitArray<CUBE_ALLOCATION> seenCubes;
+    seenCubes.clear();
+    shutOffRecursive(seenCubes);
+}
+
+void GameCube::shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
+{
+    /*
+    if (seenCubes.test(m_id))
+    {
+        return;
+    }
+
+    seenCubes.mark(m_id);
+    */
+
     BG0Drawable &draw = m_vid.bg0;
     draw.image(vec(8,8), GrassDark);
+    m_isOn = false;
+
+    /**
+    Neighborhood neighborhood(m_id);
+
+    if (neighborhood.hasNeighborAt(TOP))
+    {
+        gameCubes[neighborhood.neighborAt(TOP)].shutOffRecursive(seenCubes);
+    }
+    
+    if (neighborhood.hasNeighborAt(BOTTOM))
+    {
+        gameCubes[neighborhood.neighborAt(BOTTOM)].shutOffRecursive(seenCubes);
+    }
+    
+    if (neighborhood.hasNeighborAt(LEFT))
+    {
+        gameCubes[neighborhood.neighborAt(LEFT)].shutOffRecursive(seenCubes);
+    }
+    
+    if (neighborhood.hasNeighborAt(RIGHT))
+    {
+        gameCubes[neighborhood.neighborAt(RIGHT)].shutOffRecursive(seenCubes);
+    }
+    */
 }
 
 void GameCube::drawCoord()
@@ -117,4 +160,56 @@ void GameCube::setPos(int x, int y)
 {
     m_x = x;
     m_y = y;
+    m_isOn = true;
+}
+
+bool GameCube::isConnectedTo(int cubeID)
+{
+    BitArray<CUBE_ALLOCATION> seenCubes;
+    seenCubes.clear();
+    return isConnectedToRecursive(cubeID, seenCubes);
+}
+
+bool GameCube::isConnectedToRecursive(int cubeID, BitArray<CUBE_ALLOCATION> &seenCubes)
+{
+    if (seenCubes.test(m_id))
+    {
+        return false;
+    }
+
+    if (m_id == cubeID)
+    {
+        return true;
+    }
+
+    seenCubes.mark(m_id);
+
+    bool foundCubeID = false;
+    Neighborhood neighborhood(m_id);
+
+    if (neighborhood.hasNeighborAt(TOP))
+    {
+        foundCubeID = gameCubes[neighborhood.neighborAt(TOP)].isConnectedToRecursive(cubeID, seenCubes);
+        if (foundCubeID) { return true; }
+    }
+    
+    if (neighborhood.hasNeighborAt(BOTTOM))
+    {
+        foundCubeID = gameCubes[neighborhood.neighborAt(BOTTOM)].isConnectedToRecursive(cubeID, seenCubes);
+        if (foundCubeID) { return true; }
+    }
+    
+    if (neighborhood.hasNeighborAt(LEFT))
+    {
+        foundCubeID = gameCubes[neighborhood.neighborAt(LEFT)].isConnectedToRecursive(cubeID, seenCubes);
+        if (foundCubeID) { return true; }
+    }
+    
+    if (neighborhood.hasNeighborAt(RIGHT))
+    {
+        foundCubeID = gameCubes[neighborhood.neighborAt(RIGHT)].isConnectedToRecursive(cubeID, seenCubes);
+        if (foundCubeID) { return true; }
+    }
+
+    return false;
 }
