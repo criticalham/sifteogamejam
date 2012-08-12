@@ -68,12 +68,12 @@ private:
         //onTouch(cube);
         //drawNeighbors(cube);
 
-        gameCubes[id].fillBackground();
+        //gameCubes[id].fillBackground();
 
         if (id == 0)
         {
             mainCube = 0;
-            //gameCubes[id].m_isOn = true;
+            gameCubes[id].m_isOn = true;
             //gameCubes[id].render();
             //gameCubes[id].highlight();
         }
