@@ -255,6 +255,10 @@ void main()
     SensorListener sensors;
     sensors.install();
 
+    AudioTracker::play(Music);
+
+    // We're entirely event-driven. Everything is
+    // updated by SensorListener's event callbacks.
     while (1)
     {
         g_game.run();

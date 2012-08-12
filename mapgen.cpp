@@ -58,11 +58,16 @@ namespace MapGen
 
 		destXY.x = 4;
 		destXY.y = 4;
-		size.x = 18;
-		size.y = 18;
+		size.x = 12;
+		size.y = 12;
 		draw.image(destXY, size, getImage(gc->m_x-1, gc->m_y), srcXY);	// mid left
-		/*draw.image(vec(0,90), getImage(gc->m_x-1, gc->m_y+1));	// bottom left
 
+        destXY.x = 0;
+        destXY.y = 12;
+        size.x = 4;
+        size.y = 4;
+		draw.image(destXY, size, getImage(gc->m_x-1, gc->m_y+1), srcXY);	// bottom left
+/*
 		draw.image(vec(30,0), getImage(gc->m_x, gc->m_y-1));	// top center
 		draw.image(vec(30,30), getImage(gc->m_x, gc->m_y));	// center
 		draw.image(vec(30,90), getImage(gc->m_x, gc->m_y+1));	// bottom center
