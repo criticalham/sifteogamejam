@@ -1,5 +1,6 @@
 #define GAMECUBE
 #include "gamecube.h"
+#include "game.h"
 #include <sifteo.h>
 #include "assets.gen.h"
 
@@ -42,10 +43,19 @@ void GameCube::highlight()
 
 void GameCube::render()
 {
+    visit();
     fillBackground(0);
     drawCoord();
 
     //updateRotation();
+}
+
+/**
+* Update game state based on this cube visit
+*/
+void GameCube::visit()
+{
+    g_game.visited(m_x, m_y);
 }
 
 void GameCube::shutOff()

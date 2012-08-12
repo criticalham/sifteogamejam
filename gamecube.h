@@ -19,6 +19,7 @@ class GameCube
         void highlight();
         void render();
         void shutOff();
+        void visit();
         void drawCoord();
         void updateRotation(Rotation);
 

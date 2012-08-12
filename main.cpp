@@ -4,6 +4,7 @@
 
 #include <sifteo.h>
 #include "assets.gen.h"
+#include "game.h"
 #include "gamecube.h"
 using namespace Sifteo;
 
@@ -19,6 +20,7 @@ static AssetSlot MainSlot = AssetSlot::allocate()
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
 static GameCube gameCubes[CUBE_ALLOCATION];
+Game g_game;
 
 class SensorListener {
 public:
@@ -290,12 +292,13 @@ private:
 
 void main()
 {
-    static SensorListener sensors;
+    g_game.init();
 
+    SensorListener sensors;
     sensors.install();
 
-    // We're entirely event-driven. Everything is
-    // updated by SensorListener's event callbacks.
     while (1)
-        System::paint();
+    {
+        g_game.run();
+    }
 }
