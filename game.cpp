@@ -23,6 +23,11 @@ void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
     reset();
 
     LOG("init() completed\n");
+    for (int i = 0; i < MAPSIZE; i++) {
+        for (int j = 0; j < MAPSIZE; j++) {
+            m_visited[i][j] = false;
+        }
+    }
 }
 
 void Game::generateItems()
@@ -150,15 +155,23 @@ void Game::run()
   */
 void Game::visitAndDrawItemsAt(GameCube* gameCube)
 {
+
     int x = gameCube->m_x;
     int y = gameCube->m_y;
     BG1Drawable& draw = gameCube->m_vid.bg1;
 
-    LOG("World object: %d", worldObjects[x/2][y/2]);
+    if(!m_visited[x][y])
+    {
+        // Play a sound effect for finding a new tile?
+        LOG("Found unvisited tile.\n");
+        m_visited[x][y] = true;
+    }
+
+    LOG("World object: %d\n", worldObjects[x/2][y/2]);
     if (worldObjects[x/2][y/2])
     {
         //draw.maskedImage(MapGen::intToAsset(worldObjects[x/2][y/2]), Transparent);
-        LOG("DRAWING IMAGE %d", worldObjects[x/2][y/2]);
+        LOG("DRAWING IMAGE %d\n", worldObjects[x/2][y/2]);
     }
 
     if(keyX == x && keyY == y)
@@ -250,15 +263,24 @@ void Game::drawMiniMap(GameCube* gc)
 
     // TODO: draw 128x128 background grid
 
+    for (int i = 0; i < MAPSIZE; i+=2) {
+        for (int j = 0; j < MAPSIZE; j+=2) {
+            if(m_visited[i][j] == true)
+                draw.fill(vec(i, j), vec(2,2), Visited);
+            else
+                draw.fill(vec(i, j), vec(2,2), Unvisited);
+        }
+    }
+
     for (int i = 0; i < CUBE_ALLOCATION; i++) {
         if(!gameCubes[i].m_isOn)
         {
-            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Emptiness);
+//            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Unvisited);
         }
         else
         {
             LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
-            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Highlight);
+            draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(2,2), Highlight);
         }
     }
 

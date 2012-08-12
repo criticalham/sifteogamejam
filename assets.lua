@@ -20,6 +20,8 @@ FlowerRed = image{"art/flower.png"}
 FlowerBlue = image{"art/flower_blue.png"}
 Key = image{"art/key.png"}
 Emptiness = image{"art/emptiness.png", pinned=true, width=8, height=8}
+Unvisited = image{"art/unvisited.png", pinned=true, width=8, height=8}
+Visited = image{"art/visited.png", pinned=true, width=8, height=8}
 Transparent = image{"art/transparent.png", pinned=true, width=8, height=8}
 Font = image{"font-8x16.png", pinned=true, width=8, height=16}
 Highlight = image{"art/highlight.png", pinned=true, width=8, height=8}
