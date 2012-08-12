@@ -7,7 +7,6 @@ using namespace Sifteo;
 
 namespace MapGen
 {
+  void randomize();
 	void drawMap(GameCube* gc);
 };
-
-#endif

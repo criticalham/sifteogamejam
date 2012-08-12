@@ -3,6 +3,7 @@
  */
 #include "game.h"
 #include "gamecube.h"
+#include "mapgen.h"
 #include <sifteo.h>
 #include <sifteo/audio.h>
 
@@ -48,6 +49,8 @@ void Game::restartGame()
         LOG("Resetting m_gameCube[%d]\n", cubeIndex);
         m_gameCubes[cubeIndex].reset();
         //visitAndDrawItemsAt(&m_gameCubes[cubeIndex]);
+
+        MapGen::randomize();
     }
 }
 

@@ -12,13 +12,33 @@ using namespace Sifteo;
 
 namespace MapGen
 {
-	// 2D Perlin Noise
-	// http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
+  // Prime numbers from http://www.bigprimes.net/archive/prime/
+  int smallSeeds[] = {14731, 14939, 15193, 15391, 14737, 14947, 15199, 15401};
+  int mediumSeeds[] = {881249, 881591, 882019, 882367, 881269, 881597, 882029, 882377};
+  int largeSeeds[] = {1169603341,1169603777,1169604217,1169604781,1169603359,1169603783,1169604221,1169604791};
+
+  int seed1 = 15731;
+  int seed2 = 789221;
+  int seed3 = 1376312589;
+  Random random;
+  void randomize()
+  {
+    seed1 = smallSeeds[random.randint(0,7)];
+    seed2 = mediumSeeds[random.randint(0,7)];
+    seed3 = largeSeeds[random.randint(0,7)];
+  }
+
+  /**
+	 * Integer-noise function: returns a floating-point value that ranges from -1 to +1.
+	 * http://libnoise.sourceforge.net/noisegen/index.html
+	 * http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
+	 */
 	float noise2(int x, int y)
 	{
 		unsigned n = x + y * 57;
 		n = (n<<13) ^ n;
-		return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+		// The large integers are primes, which may be modified as long as they remain prime; non-prime numbers may introduce discernible patterns to the output.
+		return ( 1.0 - ( (n * (n * n * seed1 + seed2) + seed3) & 0x7fffffff) / 1073741824.0);
 	}
 
 	float smoothNoise(int x, int y)
@@ -83,4 +103,3 @@ namespace MapGen
 	}
 }
 #endif
-
