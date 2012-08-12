@@ -23,9 +23,13 @@ namespace MapGen
 
 	float smoothNoise(int x, int y)
 	{
+#if 1	// no smoothing
+		float n = noise2(x,y);
+#else
 		float n = ( noise2(x-1, y-1)+noise2(x+1, y-1)+noise2(x-1, y+1)+noise2(x+1, y+1) ) * 0.0625; // corners
 		n+= ( noise2(x-1, y)  +noise2(x+1, y)  +noise2(x, y-1)  +noise2(x, y+1) ) * 0.125; // sides
 		n+=  noise2(x, y) * 0.25; // center
+#endif
 		return n + 0.5f;	// the .5 normalizes it to [0,1]
 	}
 
