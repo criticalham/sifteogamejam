@@ -18,7 +18,12 @@ static AssetSlot MainSlot = AssetSlot::allocate()
 
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
+
 GameCube gameCubes[CUBE_ALLOCATION];
+
+Rotation addRotations(Rotation r1, Rotation r2);
+int rotToInt(Rotation r);
+
 
 class SensorListener {
 public:
@@ -67,7 +72,6 @@ private:
         //drawNeighbors(cube);
 
         gCube.fillBackground(0);
-
 
         if (id == 0)
         {
@@ -269,21 +273,88 @@ private:
         }
 
         Neighborhood nb(gameCubes[prevMainCube].m_cube);
+        Neighborhood mainCubeNB(gameCubes[mainCube].m_cube);
         if (nb.neighborAt(TOP) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
+
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_180, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_LEFT_90, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_NORMAL, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_RIGHT_90, gameCubes[prevMainCube].getRotation()));
+            }
         }
         else if (nb.neighborAt(LEFT) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x-1, gameCubes[prevMainCube].m_y);
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_LEFT_90, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_NORMAL, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_RIGHT_90, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_180, gameCubes[prevMainCube].getRotation()));
+            }
         }
+
         else if (nb.neighborAt(RIGHT) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x+1, gameCubes[prevMainCube].m_y);
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_RIGHT_90, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_180, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_LEFT_90, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_NORMAL, gameCubes[prevMainCube].getRotation()));
+            }
         }
         else if (nb.neighborAt(BOTTOM) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
+            if (mainCubeNB.neighborAt(TOP) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_NORMAL, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(RIGHT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_RIGHT_90, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(BOTTOM) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_180, gameCubes[prevMainCube].getRotation()));
+            }
+            else if (mainCubeNB.neighborAt(LEFT) == prevMainCube)
+            {
+                gameCubes[mainCube].updateRotation(addRotations(ROT_LEFT_90, gameCubes[prevMainCube].getRotation()));
+            }
         }
         gameCubes[mainCube].render();
 
@@ -322,4 +393,27 @@ void main()
     // updated by SensorListener's event callbacks.
     while (1)
         System::paint();
+}
+
+Rotation addRotations(Rotation r1, Rotation r2)
+{
+    int rotationIndex = (rotToInt(r1) + rotToInt(r2))%4;
+
+    switch (rotationIndex) {
+        case 0:         return ROT_NORMAL;
+        case 1:         return ROT_RIGHT_90;
+        case 2:         return ROT_180;
+        case 3:         return ROT_LEFT_90;
+        default:        return ROT_NORMAL;
+    }
+}
+
+int rotToInt(Rotation r)
+{
+    switch (r) {
+        case ROT_RIGHT_90:  return 1;
+        case ROT_180:       return 2;
+        case ROT_LEFT_90:   return 3;
+        default:            return 0;
+    }
 }

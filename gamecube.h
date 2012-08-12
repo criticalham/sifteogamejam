@@ -22,7 +22,9 @@ class GameCube
         void render();
         void shutOff();
         void drawCoord();
-        void setRotation();
+        void updateRotation(Rotation);
+        Rotation getRotation();
+
         void setPos(int, int);
         bool isConnectedTo(int cubeID);
 
