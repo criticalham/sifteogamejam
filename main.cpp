@@ -11,7 +11,7 @@ static Metadata M = Metadata()
     .title("Explorathon")
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
-    .cubeRange(3);
+    .cubeRange(1,8);
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
