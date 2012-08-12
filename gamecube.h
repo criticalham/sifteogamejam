@@ -9,7 +9,6 @@ class GameCube
     public:
         int m_id;
         bool m_isOn;
-        bool m_isOff;
 
         int m_x, m_y, m_rotation;
         Neighborhood m_nb;
@@ -21,16 +20,17 @@ class GameCube
         void fillBackground();
         void highlight();
         void render();
+        void turnOn(int referenceCubeID);
         void shutOff();
         void visitAndDrawItems();
         void drawCoord();
         void updateRotation(Rotation);
         Rotation getRotation();
-
         void setPos(int, int);
         bool isConnectedTo(int cubeID);
 
     protected:
+        void turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &seenCubes);
         void shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes);
         bool isConnectedToRecursive(int cubeID, BitArray<CUBE_ALLOCATION> &seenCubes);
 
