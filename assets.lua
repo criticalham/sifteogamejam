@@ -20,3 +20,4 @@ Key = image{"art/key.png"}
 Emptiness = image{"art/emptiness.png", pinned=true, width=8, height=8}
 Transparent = image{"art/transparent.png", pinned=true, width=8, height=8}
 Font = image{"font-8x16.png", pinned=true, width=8, height=16}
+Highlight = image{"art/highlight.png", pinned=true, width=8, height=8}

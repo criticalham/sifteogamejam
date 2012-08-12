@@ -41,10 +41,10 @@ void GameCube::fillBackground()
 void GameCube::highlight()
 {
     BG0Drawable &draw = m_vid.bg0;
-    draw.fill(vec(0,0), vec(1,16), Emptiness);
-    draw.fill(vec(0,0), vec(16,1), Emptiness);
-    draw.fill(vec(15,0), vec(1,16), Emptiness);
-    draw.fill(vec(0,15), vec(16,1), Emptiness);
+    draw.fill(vec(0,0), vec(1,16), Highlight);
+    draw.fill(vec(0,0), vec(16,1), Highlight);
+    draw.fill(vec(15,0), vec(1,16), Highlight);
+    draw.fill(vec(0,15), vec(16,1), Highlight);
 }
 
 void GameCube::render()
