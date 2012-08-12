@@ -10,3 +10,5 @@ namespace MapGen
   void randomize();
 	void drawMap(GameCube* gc);
 };
+
+#endif
