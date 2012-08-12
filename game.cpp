@@ -40,6 +40,8 @@ bool Game::itemInRange(UInt2 objectPos, UInt2 targetPos, int radius)
 {
     int dx = objectPos.x - targetPos.x;
     int dy = objectPos.y - targetPos.y;
+    //LOG("itemInRange -- INFO: x %d, y %d, x %d, y %d\n", objectPos.x, objectPos.y, targetPos.x, targetPos.y);
+    //LOG("itemInRange? dx %d, dy %d, radius%d\n", dx, dy, radius);
     if (dx*dx + dy*dy <= radius*radius) return true;
 
     dx = (MAPSIZE-dx)%MAPSIZE;
@@ -53,11 +55,11 @@ UInt2 Game::coordOnDonut(UInt2 pos, int minRadius, int maxRadius)
     int dx, dy;
     do
     {
-        dy = Random().randrange(maxRadius*2) - maxRadius;
-        dx = Random().randrange(maxRadius*2) - maxRadius;
+        dy = Random().randrange(maxRadius*2+1) - maxRadius;
+        dx = Random().randrange(maxRadius*2+1) - maxRadius;
         //LOG("x: %d\ty: %d\tmin_radius: %d\tmax_radius: %d\t--\t%d, %d, %d\n", dx, dy, minRadius, maxRadius, dx*dx + dy*dy, maxRadius*maxRadius, minRadius*minRadius);
     } while (dx*dx + dy*dy > maxRadius*maxRadius || dx*dx + dy*dy < minRadius*minRadius);
-    return vec((pos.x + dx)%16, (pos.y + dy)%16);
+    return vec((pos.x + dx)%MAPSIZE, (pos.y + dy)%MAPSIZE);
 }
 
 void Game::generateItems()
@@ -82,20 +84,25 @@ void Game::generateItems()
     tries = 0;
     for (i=0; i < NUM_BOULDERS; i++)
     {
-        randomPos = coordOnDonut(vec(keyX, keyY), BOULDER_SPAWN_MIN_RADIUS, BOULDER_SPAWN_MAX_RADIUS);
+        randomPos = coordOnDonut(vec(keyX/2, keyY/2), BOULDER_SPAWN_MIN_RADIUS, BOULDER_SPAWN_MAX_RADIUS);
         x = randomPos.x;
         if (x < 0) x += MAPSIZE;
         y = randomPos.y;
         if (y < 0) y += MAPSIZE;
-        if (! worldObjects[x][y] && !itemInRange(vec(chestX, chestY), randomPos, BOULDER_SPAWN_MIN_RADIUS))
+        if (worldObjects[x][y] == 0 && !itemInRange(vec(chestX/2, chestY/2), vec(x,y), BOULDER_SPAWN_MIN_RADIUS))
         {
             worldObjects[x][y] = BOULDER_ID;
+            //LOG("Boulder @ %d, %d\n", x, y);
         }
         else
         {
             i--;
             tries++;
-            if (tries > 300) break;
+            if (tries > 30000)
+            {
+                LOG("COULDN'T SPAWN ALL BOULDERS\n");
+                break;
+            }
         }
     }
     tries = 0;
@@ -114,7 +121,11 @@ void Game::generateItems()
         {
             i--;
             tries++;
-            if (tries > 300) break;
+            if (tries > 30000)
+            {
+                LOG("COULDN'T SPAWN ALL RED FLOWERS\n");
+                break;
+            }
         }
     }
     tries = 0;
@@ -133,7 +144,11 @@ void Game::generateItems()
         {
             i--;
             tries++;
-            if (tries > 300) break;
+            if (tries > 30000)
+            {
+                LOG("COULDN'T SPAWN ALL BLUE FLOWERS\n");
+                break;
+            }
         }
     }
 
