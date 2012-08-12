@@ -15,5 +15,5 @@ ChestClosed = image{"art/chest_closed.png"}
 FlowerRed = image{"art/flower.png"}
 FlowerBlue = image{"art/flower_blue.png"}
 Key = image{"art/key.png"}
-Empty = image{"art/emptiness.png", pinned=true, width=1, height=1}
+Empty = image{"art/emptiness.png", pinned=true}
 Font = image{"font-8x16.png", pinned=true, width=8, height=16}

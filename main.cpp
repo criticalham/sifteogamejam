@@ -139,7 +139,6 @@ private:
     {
         LOG("Neighbor Remove: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
-        /*
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborRemove++;
             drawNeighbors(firstID);
@@ -148,8 +147,9 @@ private:
             counters[secondID].neighborRemove++;
             drawNeighbors(secondID);
         }
-        */
+        
 
+/*
         GameCube *cube1 = &gameCubes[firstID];
         GameCube *cube2 = &gameCubes[secondID];
 
@@ -174,8 +174,9 @@ private:
         {
             // WHO CARES?
         }
+        */
 
-        /*
+        
         if (mainCube == firstID || mainCube == secondID)
         {
             if (secondID != mainCube)
@@ -187,14 +188,14 @@ private:
                 gameCubes[firstID].shutOff();
             }
         }
-        */
+        
     }
 
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
-        /*
+        
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborAdd++;
             drawNeighbors(firstID);
@@ -203,8 +204,9 @@ private:
             counters[secondID].neighborAdd++;
             drawNeighbors(secondID);
         }
-        */
+        
 
+        /*
         prevMainCube = mainCube;
 
         GameCube *cube1 = &gameCubes[firstID];
@@ -259,8 +261,9 @@ private:
 
             LOG("SHUTTING OFF BOTH CUBES");
         }
+        */
 
-        /*
+        
         prevMainCube = mainCube;
         gameCubes[mainCube].fillBackground(0);
         if (firstID == mainCube)
@@ -361,7 +364,6 @@ private:
         gameCubes[mainCube].render();
 
         //gameCubes[mainCube].highlight();
-        */
     }
 
     void drawNeighbors(CubeID cube)

@@ -60,17 +60,20 @@ void GameCube::shutOff()
 
 void GameCube::shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
 {
+    /*
     if (seenCubes.test(m_id))
     {
         return;
     }
 
     seenCubes.mark(m_id);
+    */
 
     BG0Drawable &draw = m_vid.bg0;
     draw.image(vec(8,8), GrassDark);
     m_isOn = false;
 
+    /**
     Neighborhood neighborhood(m_id);
 
     if (neighborhood.hasNeighborAt(TOP))
@@ -92,6 +95,7 @@ void GameCube::shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
     {
         gameCubes[neighborhood.neighborAt(RIGHT)].shutOffRecursive(seenCubes);
     }
+    */
 }
 
 void GameCube::drawCoord()
