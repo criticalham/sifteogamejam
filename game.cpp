@@ -25,8 +25,8 @@ void Game::reset()
 
     keyX = 0;
     keyY = 0;
-    chestX = 0;
-    chestY = 1;
+    chestX = 2;
+    chestY = 0;
 }
 
 void Game::restartGame()
