@@ -21,6 +21,7 @@ class GameCube
         void shutOff();
         void drawCoord();
         void updateRotation(Rotation);
+        Rotation getRotation();
 
         void setPos(int, int);
     private:

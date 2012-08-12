@@ -43,7 +43,7 @@ namespace MapGen
 
 	void drawMap(GameCube* gc)
 	{
-		BG0Drawable draw = gc->m_vid->bg0;
+		BG0Drawable draw = gc->m_vid.bg0;
 		draw.image(vec(-30,-30), getImage(gc->m_x-1, gc->m_y-1));	// top left
 		draw.image(vec(-30,30), getImage(gc->m_x-1, gc->m_y));	// mid left
 		draw.image(vec(-30,90), getImage(gc->m_x-1, gc->m_y+1));	// bottom left
