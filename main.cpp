@@ -183,6 +183,8 @@ private:
 
         Neighborhood nb(gameCubes[prevMainCube].m_cube);
         Neighborhood mainCubeNB(gameCubes[mainCube].m_cube);
+
+        // Ensure the attached cube is facing the same direction as the main cube
         if (nb.neighborAt(TOP) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y+1);
