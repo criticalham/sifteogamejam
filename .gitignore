@@ -1,6 +1,7 @@
 *.elf
 *.o
 *.d
+*.gen.*
 
 main.d
 
