@@ -31,6 +31,8 @@ private:
     // Game state
     bool foundKey;
     bool foundChest;
+    bool gotKey;
+    bool gotChest;
 
     int keyX;
     int keyY;
