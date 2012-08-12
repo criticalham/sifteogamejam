@@ -36,7 +36,6 @@ GrassDark = image{"art/grass_dark.png"}
 GrassLight = image{"art/grass_light.png"}
 Rocks = image{"art/rocks.png"}
 Sand = image{"art/sand.png"}
-Water = image{"art/water.png"}
 ChestOpen = image{"art/chest_open.png"}
 ChestClosed = image{"art/chest_closed.png"}
 Key = image{"art/key.png"}
