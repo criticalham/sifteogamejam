@@ -12,7 +12,7 @@ static Metadata M = Metadata()
     .title("Explorathon")
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
-    .cubeRange(3);
+    .cubeRange(2, 20);
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
@@ -102,7 +102,7 @@ private:
             " (" << counters[cube].touch << ")\n";
         //vid[cube].bg0rom.text(vec(1,9), str);
 
-        g_game.handleCubeTouch(&gameCubes[id]);
+        g_game.handleCubeTouch(&gameCubes[id], cube.isTouching());
     }
 
     void onAccelChange(unsigned id)
@@ -267,7 +267,7 @@ void main()
     SensorListener sensors;
     sensors.install();
 
-    AudioTracker::play(Music);
+    //AudioTracker::play(Music);
 
     // We're entirely event-driven. Everything is
     // updated by SensorListener's event callbacks.

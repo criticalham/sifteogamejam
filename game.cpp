@@ -4,13 +4,13 @@
 #include "game.h"
 #include "gamecube.h"
 #include <sifteo.h>
+#include <sifteo/audio.h>
 
 #define DEBUG
 
 void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
 {
     m_gameCubes[CUBE_ALLOCATION] = *gameCubes;
-
     reset();
 
     LOG("init() completed\n");
@@ -31,11 +31,17 @@ void Game::reset()
 
 void Game::restartGame()
 {
+    LOG("Game reset!\n");
+
+    // Reset game data
     reset();
 
-    for(int cubeIndex=0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
+    // Reset all cubes
+    for (int cubeIndex = 0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
     {
+        LOG("Resetting m_gameCube[%d]\n", cubeIndex);
         m_gameCubes[cubeIndex].reset();
+        //visitAndDrawItemsAt(&m_gameCubes[cubeIndex]);
     }
 }
 
@@ -58,8 +64,7 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         foundKey = true;
 
         if(!gotKey)
-            draw.maskedImage(Key, Transparent);
-
+            draw.maskedImage(Key, Emptiness);
 
         LOG("Game key found!\n");
     }
@@ -82,32 +87,41 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
 /**
   * Handles cube touches
   */
-void Game::handleCubeTouch(GameCube* gameCube)
+void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 {
-    int x = gameCube->m_x;
-    int y = gameCube->m_y;
-    BG1Drawable& draw = gameCube->m_vid.bg1;
-
-    if(chestX == x && chestY == y)
+    LOG("isDown is %d\n", isDown);
+    if(isDown)
     {
-        if(gotChest)
+        int x = gameCube->m_x;
+        int y = gameCube->m_y;
+        BG1Drawable& draw = gameCube->m_vid.bg1;
+
+        if(chestX == x && chestY == y)
         {
-            LOG("Winner! Restarting game.\n");
-            restartGame();
+            if(gotChest)
+            {
+                LOG("Restarting game.\n");
+                restartGame();
+                gameCube->render();
+            }
+
+            if(gotKey)
+            {
+                gotChest = true;
+                AudioChannel(0).play(CoinSound);
+                LOG("Chest got!\n");
+                draw.maskedImage(ChestOpen, Transparent);
+            }
         }
 
-        if(gotKey)
+        if(!gotKey && keyX == x && keyY == y)
         {
-            gotChest = true;
-            draw.maskedImage(ChestOpen, Transparent);
+            AudioChannel(0).play(KeySound);
+            LOG("Key got!\n");
+            gotKey = true;
+            gameCube->render();
         }
-    }
 
-    if(!gotKey && keyX == x && keyY == y)
-    {
-        gotKey = true;
-        gameCube->render();
+        draw.setPanning(vec(-32, -32));
     }
-
-    draw.setPanning(vec(-32, -32));
 }

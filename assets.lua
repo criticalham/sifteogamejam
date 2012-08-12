@@ -3,6 +3,8 @@ IconAssets = group{quality=9.95}
 Icon = image{"icon.png"}
 
 Music = tracker{"sv_ttt.xm"}
+CoinSound = sound{"chest.wav"}
+KeySound = sound{"key.wav"}
 
 GameAssets = group{}
 Dirt = image{"art/dirt.png"}
