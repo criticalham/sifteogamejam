@@ -113,7 +113,7 @@ private:
 
         if(abs(accel.x) > 40 || abs(accel.y) > 40)
         {
-            if(!gameCubes[id].m_isMiniMap)
+            if(!gameCubes[id].m_isMiniMap && !gameCubes[id].m_isOn)
             {
                 gameCubes[id].m_isMiniMap = true;
                 gameCubes[id].render();
@@ -124,7 +124,7 @@ private:
             if(gameCubes[id].m_isMiniMap)
             {
                 gameCubes[id].m_isMiniMap = false;
-                gameCubes[id].render();
+                gameCubes[id].shutOff();
             }
         }
     }

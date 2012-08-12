@@ -3,6 +3,7 @@
  */
 #include "game.h"
 #include "gamecube.h"
+#include "mapgen.h"
 #include <sifteo.h>
 #include <sifteo/audio.h>
 
@@ -48,6 +49,8 @@ void Game::restartGame()
         LOG("Resetting m_gameCube[%d]\n", cubeIndex);
         m_gameCubes[cubeIndex].reset();
         //visitAndDrawItemsAt(&m_gameCubes[cubeIndex]);
+
+        MapGen::randomize();
     }
 }
 
@@ -140,6 +143,28 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 
         draw.setPanning(vec(-32, -32));
     }
+}
+
+void Game::drawMiniMap(GameCube* gc)
+{
+    LOG("Drawing mini map");
+    FB64Drawable &draw = gc->m_vid.fb64;
+    gc->m_vid.colormap[0].set(1.f, 0.f, 0.f);
+    gc->m_vid.colormap[1].set(0.f, 1.f, 0.f);
+
+
+    for (int i = 0; i < 50; i++) {
+        draw.fill(vec(i, i), vec(3,3), 1);
+//        draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(3,3), 1);
+//        if(gameCubes[i].m_isOn)
+//        {
+//            LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
+//            draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(3,3), 1);
+//        }
+    }
+
+    System::paint();
+
 }
 
 bool Game::positionVisible(int x, int y)
