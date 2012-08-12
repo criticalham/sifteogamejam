@@ -22,5 +22,6 @@ extern const Sifteo::AssetImage FlowerRed;
 extern const Sifteo::AssetImage FlowerBlue;
 extern const Sifteo::AssetImage Key;
 extern const Sifteo::PinnedAssetImage Emptiness;
+extern const Sifteo::PinnedAssetImage Transparent;
 extern const Sifteo::PinnedAssetImage Font;
 extern const Sifteo::AssetTracker Music;
