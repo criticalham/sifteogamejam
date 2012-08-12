@@ -125,5 +125,24 @@ namespace MapGen
                 return Boulder;
         }
     }
+
+
+    PinnedAssetImage intToAssetSmall(int i)
+    {
+        switch(i)
+        {
+            case 1:
+                return BoulderSmall;
+                break;
+            case 2:
+                return FlowerRedSmall;
+                break;
+            case 3:
+                return FlowerBlueSmall;
+                break;
+            default:
+                return BoulderSmall;
+        }
+    }
 }
 #endif

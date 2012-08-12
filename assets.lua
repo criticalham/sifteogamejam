@@ -23,6 +23,14 @@ Turtle = image{"art/turtle.png", pinned=true, width=64, height=64}
 Frog = image{"art/frog.png", pinned=true, width=64, height=64}
 Ladybug = image{"art/ladybug.png", pinned=true, width=64, height=64}
 
+BoulderSmall = image{"art/boulder_small.png", pinned=true, width=8, height=8}
+FlowerRedSmall = image{"art/flower_small.png", pinned=true, width=8, height=8}
+FlowerBlueSmall = image{"art/flower_blue_small.png", pinned=true, width=8, height=8}
+SnakeSmall = image{"art/snake_small.png", pinned=true, width=64, height=64}
+TurtleSmall = image{"art/turtle_small.png", pinned=true, width=64, height=64}
+FrogSmall = image{"art/frog_small.png", pinned=true, width=64, height=64}
+LadybugSmall = image{"art/ladybug_small.png", pinned=true, width=64, height=64}
+
 Dirt = image{"art/dirt.png"}
 GrassDark = image{"art/grass_dark.png"}
 GrassLight = image{"art/grass_light.png"}

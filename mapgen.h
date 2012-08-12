@@ -11,6 +11,7 @@ namespace MapGen
 	void drawMap(GameCube* gc);
 	void drawMiniMap(GameCube* gc);
 	PinnedAssetImage intToAsset(int i);
+	PinnedAssetImage intToAssetSmall(int i);
 };
 
 #endif
