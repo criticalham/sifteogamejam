@@ -259,7 +259,7 @@ void main()
     SensorListener sensors;
     sensors.install();
 
-    AudioTracker::play(Music);
+    //AudioTracker::play(Music);
 
     // We're entirely event-driven. Everything is
     // updated by SensorListener's event callbacks.

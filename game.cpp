@@ -4,13 +4,13 @@
 #include "game.h"
 #include "gamecube.h"
 #include <sifteo.h>
+#include <sifteo/audio.h>
 
 #define DEBUG
 
 void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
 {
     m_gameCubes[CUBE_ALLOCATION] = *gameCubes;
-
     reset();
 
     LOG("init() completed\n");
@@ -98,12 +98,15 @@ void Game::handleCubeTouch(GameCube* gameCube)
         if(gotChest)
         {
             LOG("Winner! Restarting game.\n");
+            //AudioChannel(0).play(CoinSound);
             restartGame();
         }
 
         if(gotKey)
         {
             gotChest = true;
+
+            //AudioChannel(0).play(CoinSound);
             draw.maskedImage(ChestOpen, Transparent);
         }
     }
