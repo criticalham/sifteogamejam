@@ -65,9 +65,8 @@ void GameCube::render()
 {
     fillBackground();
 	MapGen::drawMap(this);
-    drawCoord();
+    //drawCoord();
     visitAndDrawItems();
-
     //updateRotation();
 }
 

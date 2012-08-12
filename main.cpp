@@ -73,7 +73,7 @@ private:
         if (id == 0)
         {
             mainCube = 0;
-            gameCubes[id].render();
+            //gameCubes[id].render();
             gameCubes[id].highlight();
             gameCubes[id].m_isOn = true;
         }
