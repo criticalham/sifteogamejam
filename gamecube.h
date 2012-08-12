@@ -41,6 +41,7 @@ class GameCube
         int directionTo(int cubeID);
 
     protected:
+        bool busy;
         void drawLeftBorder();
         void drawRightBorder();
         void drawBottomBorder();

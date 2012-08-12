@@ -150,17 +150,26 @@ private:
 
         if (cube1->m_isOn && cube2->m_isOn)
         {
+            //if (cube1->isConnectedTo(cube2)) return;
             int cube1ClusterSize = cube1->clusterSize();
             int cube2ClusterSize = cube2->clusterSize();
 
             if ((cube1ClusterSize > cube2ClusterSize) || ((cube1ClusterSize == cube2ClusterSize && cube1->isConnectedTo(mainCube))))
             {
-                cube2->shutOff();
+                if(!cube2->isConnectedTo(mainCube))
+                {
+                    LOG("Shut off cube %d\n", cube2->m_id);
+                    cube2->shutOff();
+                }
                 cube1->highlight();
             }
             else
             {
-                cube1->shutOff();
+                if(!cube1->isConnectedTo(mainCube))
+                {
+                    LOG("Shut off cube %d\n", cube1->m_id);
+                    cube1->shutOff();
+                }
                 cube2->highlight();
             }
         }
