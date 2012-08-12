@@ -13,9 +13,14 @@
 #define BOULDER_ID 1
 #define RED_FLOWER_ID 2
 #define BLUE_FLOWER_ID 3
+#define TURTLE_ID  4
+#define SNAKE_ID   5
+#define FROG_ID    6
+#define LADYBUG_ID 7
 #define NUM_BOULDERS 30
 #define NUM_RED_FLOWERS 10
 #define NUM_BLUE_FLOWERS 10
+#define NUM_ANIMALS_PER_TYPE 3
 #define BOULDER_SPAWN_MIN_RADIUS 5
 #define BOULDER_SPAWN_MAX_RADIUS 8
 #define BLUE_FLOWER_SPAWN_MIN_RADIUS 1
@@ -131,6 +136,76 @@ void Game::generateItems()
             if (tries > 300) break;
         }
     }
+
+    tries = 0;
+    for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
+    {
+        x = Random().randrange(MAPSIZE);
+        y = Random().randrange(MAPSIZE);
+        
+        if (!worldObjects[x][y] && (x != keyX && y != keyY))
+        {
+            worldObjects[x][y] = FROG_ID;
+        }
+        else
+        {
+            i--;
+            tries++;
+            if (tries > 300) break;
+        }
+    }
+    tries = 0;
+    for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
+    {
+        x = Random().randrange(MAPSIZE/2) * 2
+        y = Random().randrange(MAPSIZE/2) * 2
+        
+        if (!worldObjects[x][y] && (x != keyX && y != keyY))
+        {
+            worldObjects[x][y] = TURTLE_ID;
+        }
+        else
+        {
+            i--;
+            tries++;
+            if (tries > 300) break;
+        }
+    }
+    tries = 0;
+    for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
+    {
+        x = Random().randrange(MAPSIZE/2) * 2
+        y = Random().randrange(MAPSIZE/2) * 2
+        
+        if (!worldObjects[x][y] && (x != keyX && y != keyY))
+        {
+            worldObjects[x][y] = SNAKE_ID;
+        }
+        else
+        {
+            i--;
+            tries++;
+            if (tries > 300) break;
+        }
+    }
+    tries = 0;
+    for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
+    {
+        x = Random().randrange(MAPSIZE/2) * 2
+        y = Random().randrange(MAPSIZE/2) * 2
+        
+        if (!worldObjects[x][y] && (x != keyX && y != keyY))
+        {
+            worldObjects[x][y] = LADYBUG_ID;
+        }
+        else
+        {
+            i--;
+            tries++;
+            if (tries > 300) break;
+        }
+    }
+
     debugWorld();
 }
 

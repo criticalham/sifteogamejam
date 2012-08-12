@@ -18,6 +18,11 @@ Boulder = image{"art/boulder.png", pinned=true, width=64, height=64}
 FlowerRed = image{"art/flower.png", pinned=true, width=64, height=64}
 FlowerBlue = image{"art/flower_blue.png", pinned=true, width=64, height=64}
 
+Snake = image{"art/snake.png", pinned=true, width=64, height=64}
+Turtle = image{"art/turtle.png", pinned=true, width=64, height=64}
+Frog = image{"art/frog.png", pinned=true, width=64, height=64}
+Ladybug = image{"art/ladybug.png", pinned=true, width=64, height=64}
+
 Dirt = image{"art/dirt.png"}
 GrassDark = image{"art/grass_dark.png"}
 GrassLight = image{"art/grass_light.png"}

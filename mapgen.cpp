@@ -109,13 +109,18 @@ namespace MapGen
         {
             case 1:
                 return Boulder;
-                break;
             case 2:
                 return FlowerRed;
-                break;
             case 3:
                 return FlowerBlue;
-                break;
+            case 4:
+            	return Turtle;
+           	case 5:
+           		return Snake;
+           	case 6:
+           		return Frog;
+            case 7:
+            	return Ladybug;
             default:
                 return Boulder;
         }
