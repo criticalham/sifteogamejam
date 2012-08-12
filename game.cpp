@@ -84,3 +84,29 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         LOG("Checking for chest %d, %d, at %d, %d\n", chestX, chestY, x, y);
     #endif
 }
+
+/**
+  * Handles cube touches
+  */
+void Game::handleCubeTouch(GameCube* gameCube)
+{
+    int x = gameCube->m_x;
+    int y = gameCube->m_y;
+    BG1Drawable& draw = gameCube->m_vid.bg1;
+
+    if(chestX == x && chestY == y)
+    {
+        if(gotKey)
+            gotChest = true;
+
+        if(gotChest)
+            draw.maskedImage(ChestOpen, Emptiness);
+    }
+
+    if(!gotKey && keyX == x && keyY == y)
+    {
+        gotKey = true;
+        gameCube->render();
+    }
+
+}

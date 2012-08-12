@@ -19,6 +19,7 @@ public:
     void draw();
     void run();
     void visitAndDrawItemsAt(GameCube* gameCube);
+    void handleCubeTouch(GameCube* gameCube);
 
 private:
     void restartGame();

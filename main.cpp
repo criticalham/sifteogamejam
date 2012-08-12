@@ -37,7 +37,7 @@ public:
         Events::neighborAdd.set(&SensorListener::onNeighborAdd, this);
         Events::neighborRemove.set(&SensorListener::onNeighborRemove, this);
         //Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
-        //Events::cubeTouch.set(&SensorListener::onTouch, this);
+        Events::cubeTouch.set(&SensorListener::onTouch, this);
         //Events::cubeBatteryLevelChange.set(&SensorListener::onBatteryChange, this);
         Events::cubeConnect.set(&SensorListener::onConnect, this);
 
@@ -101,6 +101,8 @@ private:
         str << "touch: " << cube.isTouching() <<
             " (" << counters[cube].touch << ")\n";
         //vid[cube].bg0rom.text(vec(1,9), str);
+
+        g_game.handleCubeTouch(&gameCubes[id]);
     }
 
     void onAccelChange(unsigned id)
