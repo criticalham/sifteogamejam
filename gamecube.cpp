@@ -2,6 +2,7 @@
 #include "gamecube.h"
 #include <sifteo.h>
 #include "assets.gen.h"
+#include "mapgen.h"
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
@@ -35,7 +36,7 @@ void GameCube::fillBackground(unsigned color)
 void GameCube::highlight()
 {
     BG0Drawable &draw = m_vid.bg0;
-    draw.fill(vec(0,0), vec(1,16), Water);
+    //draw.fill(vec(0,0), vec(1,16), Water);
     //draw.fill(vec(0,0), vec(16,1), Icon);
     //draw.fill(vec(15,0), vec(1,16), Icon);
     //draw.fill(vec(0,15), vec(16,1), Icon);
@@ -44,6 +45,7 @@ void GameCube::highlight()
 void GameCube::render()
 {
     fillBackground(0);
+	MapGen::drawMap(this);
     drawCoord();
 
     //updateRotation();
