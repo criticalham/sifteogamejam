@@ -224,7 +224,7 @@ private:
                 gameCubes[mainCube].updateRotation(addRotations(ROT_180, gameCubes[prevMainCube].getRotation()));
             }
         }
-        /*
+
         else if (nb.neighborAt(RIGHT) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x+1, gameCubes[prevMainCube].m_y);
@@ -244,7 +244,7 @@ private:
             {
                 gameCubes[mainCube].updateRotation(addRotations(ROT_NORMAL, gameCubes[prevMainCube].getRotation()));
             }
-        }*/
+        }
         else if (nb.neighborAt(BOTTOM) == mainCube)
         {
             gameCubes[mainCube].setPos(gameCubes[prevMainCube].m_x, gameCubes[prevMainCube].m_y-1);
