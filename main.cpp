@@ -292,7 +292,7 @@ private:
 
 void main()
 {
-    g_game.init();
+    g_game.initWithCubes(gameCubes);
 
     SensorListener sensors;
     sensors.install();

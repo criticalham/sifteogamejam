@@ -7,12 +7,13 @@
 
 #include <sifteo.h>
 #include "assets.gen.h"
+#include "gamecube.h"
 
 using namespace Sifteo;
 
 class Game {
 public:
-    void init();
+    void initWithCubes(GameCube gameCubes[CUBE_ALLOCATION]);
     void cleanup();
     void reset();
     void draw();
@@ -20,6 +21,10 @@ public:
     void visited(int x, int y);
 
 private:
+    void restartGame();
+
+    GameCube m_gameCubes[CUBE_ALLOCATION];
+
     // Meta game state
     bool running;
 

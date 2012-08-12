@@ -20,6 +20,14 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
 
     m_motion.attach(m_id);
     m_cube = CubeID(m_id);
+    reset();
+}
+
+/**
+* Resets cube back to initial state
+*/
+void GameCube::reset()
+{
     m_x = 0;
     m_y = 0;
 

@@ -15,6 +15,7 @@ class GameCube
         VideoBuffer m_vid;
         TiltShakeRecognizer m_motion;
         void initialize(int, VideoBuffer&, TiltShakeRecognizer&);
+        void reset();
         void fillBackground(unsigned);
         void highlight();
         void render();
