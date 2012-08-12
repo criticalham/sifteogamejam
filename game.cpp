@@ -31,11 +31,13 @@ void Game::reset()
 
 void Game::restartGame()
 {
+    LOG("Game reset!\n");
     reset();
 
     for(int cubeIndex=0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
     {
         m_gameCubes[cubeIndex].reset();
+        m_gameCubes[cubeIndex].render();
     }
 }
 
@@ -97,26 +99,25 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 
         if(chestX == x && chestY == y)
         {
-            restartGame();
             if(gotChest)
             {
-                LOG("Winner! Restarting game.\n");
-                //AudioChannel(0).play(CoinSound);
+                LOG("Restarting game.\n");
                 restartGame();
+                gameCube->render();
             }
 
             if(gotKey)
             {
+                LOG("WINNER!\n");
                 gotChest = true;
+                AudioChannel(0).play(CoinSound);
                 draw.maskedImage(ChestOpen, Transparent);
             }
         }
 
         if(!gotKey && keyX == x && keyY == y)
         {
-            gotChest = true;
-
-            //AudioChannel(0).play(CoinSound);
+            AudioChannel(0).play(KeySound);
             draw.maskedImage(ChestOpen, Transparent);
             gotKey = true;
             gameCube->render();
