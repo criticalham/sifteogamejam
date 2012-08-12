@@ -104,7 +104,11 @@ void GameCube::updateRotation(Rotation r)
         m_vid.setRotation(ROT_LEFT_90);
     }*/
     m_vid.setRotation(r);
+}
 
+Rotation GameCube::getRotation()
+{
+    return m_vid.rotation();
 }
 
 void GameCube::setPos(int x, int y)

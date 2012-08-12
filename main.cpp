@@ -21,6 +21,8 @@ static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
 static GameCube gameCubes[CUBE_ALLOCATION];
 Game g_game;
+Rotation addRotations(Rotation r1, Rotation r2);
+int rotToInt(Rotation r);
 
 class SensorListener {
 public:
@@ -69,7 +71,6 @@ private:
         //drawNeighbors(cube);
 
         gCube.fillBackground(0);
-
 
         if (id == 0)
         {
@@ -300,5 +301,28 @@ void main()
     while (1)
     {
         g_game.run();
+    }
+}
+
+Rotation addRotations(Rotation r1, Rotation r2)
+{
+    int rotationIndex = (rotToInt(r1) + rotToInt(r2))%4;
+
+    switch (rotationIndex) {
+        case 0:         return ROT_NORMAL;
+        case 1:         return ROT_RIGHT_90;
+        case 2:         return ROT_180;
+        case 3:         return ROT_LEFT_90;
+        default:        return ROT_NORMAL;
+    }
+}
+
+int rotToInt(Rotation r)
+{
+    switch (r) {
+        case ROT_RIGHT_90:  return 1;
+        case ROT_180:       return 2;
+        case ROT_LEFT_90:   return 3;
+        default:            return 0;
     }
 }

@@ -23,6 +23,7 @@ class GameCube
         void visit();
         void drawCoord();
         void updateRotation(Rotation);
+        Rotation getRotation();
 
         void setPos(int, int);
     private:
