@@ -203,7 +203,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     // Ensure the attached cube is facing the same direction as the main cube
     if (referenceNeighborhood.neighborAt(TOP) == referenceCubeID)
     {
-        setPos(referenceCube.m_x, referenceCube.m_y+2);
+        setPos(referenceCube.m_x, referenceCube.m_y-2);
 
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
@@ -265,7 +265,7 @@ void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &s
     }
     else if (referenceNeighborhood.neighborAt(BOTTOM) == m_id)
     {
-        setPos(referenceCube.m_x, referenceCube.m_y-2);
+        setPos(referenceCube.m_x, referenceCube.m_y+2);
         if (currentNeighborhood.neighborAt(TOP) == referenceCubeID)
         {
             updateRotation(addRotations(ROT_NORMAL, referenceCube.getRotation()));
