@@ -198,6 +198,7 @@ private:
         }
 
         prevMainCube = mainCube;
+        gameCubes[prevMainCube].undoHighlight();
 
         GameCube *cube1 = &gameCubes[firstID];
         GameCube *cube2 = &gameCubes[secondID];
@@ -221,6 +222,7 @@ private:
             newCube->turnOn(referenceCube->m_id);
 
             mainCube = newCube->m_id;
+            newCube->highlight();
 
             LOG("Main cube is now %d\n", mainCube);
         }
