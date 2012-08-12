@@ -31,6 +31,8 @@ void Game::reset()
 
 void Game::restartGame()
 {
+    reset();
+
     for(int cubeIndex=0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
     {
         m_gameCubes[cubeIndex].reset();
@@ -56,7 +58,8 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         foundKey = true;
 
         if(!gotKey)
-            draw.maskedImage(Key, Emptiness);
+            draw.maskedImage(Key, Transparent);
+
 
         LOG("Game key found!\n");
     }
@@ -73,16 +76,12 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         LOG("Game chest found!\n");
     }
 
-    if(gotChest)
-    {
-        restartGame();
-        LOG("Game over! Restarting game.\n");
-    }
-
     #ifdef DEBUG
         LOG("Checking for key %d, %d, at %d, %d\n", keyX, keyY, x, y);
         LOG("Checking for chest %d, %d, at %d, %d\n", chestX, chestY, x, y);
     #endif
+
+    draw.setPanning(vec(-32, -32));
 }
 
 /**
@@ -96,11 +95,17 @@ void Game::handleCubeTouch(GameCube* gameCube)
 
     if(chestX == x && chestY == y)
     {
-        if(gotKey)
-            gotChest = true;
-
         if(gotChest)
-            draw.maskedImage(ChestOpen, Emptiness);
+        {
+            LOG("Winner! Restarting game.\n");
+            restartGame();
+        }
+
+        if(gotKey)
+        {
+            gotChest = true;
+            draw.maskedImage(ChestOpen, Transparent);
+        }
     }
 
     if(!gotKey && keyX == x && keyY == y)
@@ -109,4 +114,5 @@ void Game::handleCubeTouch(GameCube* gameCube)
         gameCube->render();
     }
 
+    draw.setPanning(vec(-32, -32));
 }

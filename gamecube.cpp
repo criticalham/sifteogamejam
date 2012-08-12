@@ -20,7 +20,7 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     m_vid.attach(m_id);
 
     // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
-    m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(16,2)));
+    m_vid.bg1.setMask(BG1Mask::filled(vec(2,2), vec(12,12)));
     m_vid.bg1.fill(Transparent);
 
     m_motion.attach(m_id);
@@ -43,8 +43,10 @@ void GameCube::reset()
 void GameCube::fillBackground()
 {
     BG0Drawable &draw = m_vid.bg0;
+    BG1Drawable &draw1 = m_vid.bg1;
     draw.image(vec(0,0), Emptiness);
     draw.erase();
+    draw1.erase();
 }
 
 void GameCube::highlight()
@@ -131,7 +133,7 @@ void GameCube::drawCoord()
 
     BG1Drawable &draw = m_vid.bg1;
 
-    draw.text(vec(0,0), Font, str);
+    //draw.text(vec(0,0), Font, str);
 }
 int i = 0;
 void GameCube::updateRotation(Rotation r)
