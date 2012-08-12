@@ -268,10 +268,22 @@ void main()
 
     AudioTracker::play(Music);
 
+    int renderCount = 0;
+
     // We're entirely event-driven. Everything is
     // updated by SensorListener's event callbacks.
     while (1)
     {
+        if (renderCount < 2)
+        {
+          // hack to fix initial cube image: render a few extra times
+          ++renderCount;
+          for (int cubeIndex = 0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
+          {
+              if(gameCubes[cubeIndex].m_isOn)
+                gameCubes[cubeIndex].render();
+          }
+        }
         g_game.run();
     }
 }
