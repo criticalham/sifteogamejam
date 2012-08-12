@@ -18,9 +18,12 @@ static AssetSlot MainSlot = AssetSlot::allocate()
 
 static VideoBuffer vid[CUBE_ALLOCATION];
 static TiltShakeRecognizer motion[CUBE_ALLOCATION];
-static GameCube gameCubes[CUBE_ALLOCATION];
+
+GameCube gameCubes[CUBE_ALLOCATION];
+
 Rotation addRotations(Rotation r1, Rotation r2);
 int rotToInt(Rotation r);
+
 
 class SensorListener {
 public:
@@ -75,6 +78,7 @@ private:
             mainCube = 0;
             gameCubes[id].render();
             gameCubes[id].highlight();
+            gameCubes[id].m_isOn = true;
         }
         else
         {
@@ -135,6 +139,7 @@ private:
     {
         LOG("Neighbor Remove: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
+        /*
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborRemove++;
             drawNeighbors(firstID);
@@ -143,7 +148,34 @@ private:
             counters[secondID].neighborRemove++;
             drawNeighbors(secondID);
         }
+        */
 
+        GameCube *cube1 = &gameCubes[firstID];
+        GameCube *cube2 = &gameCubes[secondID];
+
+        if (cube1->m_isOn && cube2->m_isOn)
+        {
+            if (cube1->m_id == mainCube || cube1->isConnectedTo(mainCube))
+            {
+                cube2->shutOff();
+            }
+            else if (cube2->m_id == mainCube || cube2->isConnectedTo(mainCube))
+            {
+                cube1->shutOff();
+            }
+
+            LOG("SHUTTING OFF ONE CUBE");
+        }
+        else if ((cube1->m_isOn && !cube2->m_isOn) || (!cube1->m_isOn && cube2->m_isOn))
+        {
+            // SHOULD NOT HAPPEN
+        }
+        else if (!cube1->m_isOn && !cube2->m_isOn)
+        {
+            // WHO CARES?
+        }
+
+        /*
         if (mainCube == firstID || mainCube == secondID)
         {
             if (secondID != mainCube)
@@ -155,12 +187,14 @@ private:
                 gameCubes[firstID].shutOff();
             }
         }
+        */
     }
 
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
+        /*
         if (firstID < arraysize(counters)) {
             counters[firstID].neighborAdd++;
             drawNeighbors(firstID);
@@ -169,7 +203,64 @@ private:
             counters[secondID].neighborAdd++;
             drawNeighbors(secondID);
         }
+        */
 
+        prevMainCube = mainCube;
+
+        GameCube *cube1 = &gameCubes[firstID];
+        GameCube *cube2 = &gameCubes[secondID];
+
+        if ((cube1->m_isOn && !cube2->m_isOn) || (!cube1->m_isOn && cube2->m_isOn))
+        {
+            GameCube *referenceCube;
+            GameCube *newCube;
+
+            if (cube1->m_isOn && cube2->m_isOff)
+            {
+                referenceCube = cube1;
+                newCube = cube2;
+            }
+            else
+            {
+                referenceCube = cube2;
+                newCube = cube1;
+            }
+
+            Neighborhood referenceNeighborhood(referenceCube->m_cube);
+            if (referenceNeighborhood.neighborAt(TOP) == newCube->m_cube)
+            {
+                newCube->setPos(referenceCube->m_x, referenceCube->m_y + 1);
+            }
+            else if (referenceNeighborhood.neighborAt(LEFT) == newCube->m_cube)
+            {
+                newCube->setPos(referenceCube->m_x - 1, referenceCube->m_y - 1);
+            }
+            else if (referenceNeighborhood.neighborAt(RIGHT) == newCube->m_cube)
+            {
+                newCube->setPos(referenceCube->m_x + 1, referenceCube->m_y);
+            }
+            else if (referenceNeighborhood.neighborAt(BOTTOM) == newCube->m_cube)
+            {
+                newCube->setPos(referenceCube->m_x, referenceCube->m_y - 1);
+            }
+
+            newCube->render();
+            newCube->highlight();
+            mainCube = newCube->m_cube;
+
+            gameCubes[prevMainCube].render();
+
+            LOG("TRANSFERRING POWER");
+        }
+        else if (!cube1->m_isOn && !cube2->m_isOn)
+        {
+            cube1->shutOff();
+            cube2->shutOff();
+
+            LOG("SHUTTING OFF BOTH CUBES");
+        }
+
+        /*
         prevMainCube = mainCube;
         gameCubes[mainCube].fillBackground(0);
         if (firstID == mainCube)
@@ -270,6 +361,7 @@ private:
         gameCubes[mainCube].render();
 
         //gameCubes[mainCube].highlight();
+        */
     }
 
     void drawNeighbors(CubeID cube)
