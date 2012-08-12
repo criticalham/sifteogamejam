@@ -34,6 +34,8 @@ private:
     void generateItems();
     void debugWorld();
     GameCube m_gameCubes[CUBE_ALLOCATION];
+    bool itemInRange(UInt2, UInt2, int);
+    UInt2 coordOnDonut(UInt2, int, int);
 
     // Meta game state
     bool running;
