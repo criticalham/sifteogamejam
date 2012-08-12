@@ -19,7 +19,6 @@ class GameCube
 
         Rotation m_rotation;
         int m_x, m_y;
-        Neighborhood m_nb;
         CubeID m_cube;
         VideoBuffer m_vid;
         TiltShakeRecognizer m_motion;

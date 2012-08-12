@@ -45,11 +45,11 @@ namespace MapGen
 		}
 		else if (noise < 0.3)
 		{
-			return Sand;
+			return GrassLight;//Sand;
 		}
 		else if (noise < 0.45)
 		{
-			return Dirt;
+			return GrassDark;//Dirt;
 		}
 		else if (noise < 0.6)
 		{
@@ -61,7 +61,7 @@ namespace MapGen
 		}
 		else
 		{
-			return Rocks;
+			return GrassLight;//Rocks;
 		}
 	}
 
