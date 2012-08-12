@@ -13,9 +13,15 @@
 #define BOULDER_ID 1
 #define RED_FLOWER_ID 2
 #define BLUE_FLOWER_ID 3
-#define NUM_BOULDERS 3
-#define NUM_RED_FLOWERS 5
-#define NUM_BLUE_FLOWERS 2
+#define NUM_BOULDERS 30
+#define NUM_RED_FLOWERS 8
+#define NUM_BLUE_FLOWERS 8
+#define BOULDER_SPAWN_MIN_RADIUS 6
+#define BOULDER_SPAWN_MAX_RADIUS 8
+#define BLUE_FLOWER_SPAWN_MIN_RADIUS 2
+#define BLUE_FLOWER_SPAWN_MAX_RADIUS 3
+#define RED_FLOWER_SPAWN_MIN_RADIUS 2
+#define RED_FLOWER_SPAWN_MAX_RADIUS 3
 
 void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
 {
@@ -25,9 +31,34 @@ void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
     LOG("init() completed\n");
 }
 
+bool Game::itemInRange(UInt2 objectPos, UInt2 targetPos, int radius)
+{
+    int dx = objectPos.x - targetPos.x;
+    int dy = objectPos.y - targetPos.y;
+    if (dx*dx + dy*dy <= radius*radius) return true;
+
+    dx = (16-dx)%16;
+    dy = (16-dy)%16;
+    return dx*dx + dy*dy <= radius*radius;
+}
+
+UInt2 Game::coordOnDonut(UInt2 pos, int minRadius, int maxRadius)
+{
+    //LOG("----------ENTER----------\n");
+    int dx, dy;
+    do
+    {
+        dy = Random().randrange(-maxRadius, maxRadius);
+        dx = Random().randrange(-maxRadius, maxRadius);
+        //LOG("x: %d\ty: %d\tmin_radius: %d\tmax_radius: %d\t--\t%d, %d, %d\n", dx, dy, minRadius, maxRadius, dx*dx + dy*dy, maxRadius*maxRadius, minRadius*minRadius);
+    } while (dx*dx + dy*dy > maxRadius*maxRadius || dx*dx + dy*dy < minRadius*minRadius);
+    return vec((pos.x + dx)%16, (pos.y + dy)%16);
+}
+
 void Game::generateItems()
 {
     int i, x, y;
+    UInt2 randomPos;
     for (i=0; i < 16*16; i++)
     {
         worldObjects[i%16][i/16] = 0;
@@ -46,9 +77,12 @@ void Game::generateItems()
 
     for (i=0; i < NUM_BOULDERS; i++)
     {
-        x = Random().randrange(16);
-        y = Random().randrange(16);
-        if (! worldObjects[x][y] && x != keyX && y != keyY && x != chestX && y != chestY)
+        randomPos = coordOnDonut(vec(keyX/2, keyY/2), BOULDER_SPAWN_MIN_RADIUS, BOULDER_SPAWN_MAX_RADIUS);
+        x = randomPos.x;
+        if (x < 0) x += 16;
+        y = randomPos.y;
+        if (y < 0) y += 16;
+        if (! worldObjects[x][y] && !itemInRange(vec(chestX/2, chestY/2), randomPos, BOULDER_SPAWN_MIN_RADIUS))
         {
             worldObjects[x][y] = BOULDER_ID;
             LOG("Boulder at %d, %d\n", x*2, y*2);
@@ -60,9 +94,12 @@ void Game::generateItems()
     }
     for (i=0; i < NUM_RED_FLOWERS; i++)
     {
-        x = Random().randrange(16);
-        y = Random().randrange(16);
-        if (! worldObjects[x][y] && x != keyX && y != keyY && x != chestX && y != chestY)
+        randomPos = coordOnDonut(vec(keyX, keyY), RED_FLOWER_SPAWN_MIN_RADIUS, RED_FLOWER_SPAWN_MAX_RADIUS);
+        x = randomPos.x;
+        if (x < 0) x += 16;
+        y = randomPos.y;
+        if (y < 0) y += 16;
+        if (! worldObjects[x][y] && x != chestX/2 && y != chestY/2)
         {
             worldObjects[x][y] = RED_FLOWER_ID;
             LOG("RedFlower at %d, %d\n", x*2, y*2);
@@ -74,9 +111,12 @@ void Game::generateItems()
     }
     for (i=0; i < NUM_BLUE_FLOWERS; i++)
     {
-        x = Random().randrange(16);
-        y = Random().randrange(16);
-        if (! worldObjects[x][y] && x != keyX && y != keyY && x != chestX && y != chestY)
+        randomPos = coordOnDonut(vec(chestX, chestY), BLUE_FLOWER_SPAWN_MIN_RADIUS, BLUE_FLOWER_SPAWN_MAX_RADIUS);
+        x = randomPos.x;
+        if (x < 0) x += 16;
+        y = randomPos.y;
+        if (y < 0) y += 16;
+        if (! worldObjects[x][y] && x != keyX/2 && y != keyY/2)
         {
             worldObjects[x][y] = BLUE_FLOWER_ID;
             LOG("BlueFlower at %d, %d\n", x*2, y*2);
@@ -154,11 +194,11 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
     int y = gameCube->m_y;
     BG1Drawable& draw = gameCube->m_vid.bg1;
 
-    LOG("World object: %d", worldObjects[x/2][y/2]);
+    LOG("World object: %d\n", worldObjects[x/2][y/2]);
     if (worldObjects[x/2][y/2])
     {
-        //draw.maskedImage(MapGen::intToAsset(worldObjects[x/2][y/2]), Transparent);
-        LOG("DRAWING IMAGE %d", worldObjects[x/2][y/2]);
+        draw.maskedImage(MapGen::intToAsset(worldObjects[x/2][y/2]), Transparent);
+        LOG("DRAWING IMAGE %d\n", worldObjects[x/2][y/2]);
     }
 
     if(keyX == x && keyY == y)
