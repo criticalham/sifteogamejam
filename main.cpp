@@ -113,7 +113,7 @@ private:
 
         if(abs(accel.x) > 40 || abs(accel.y) > 40)
         {
-            if(!gameCubes[id].m_isMiniMap)
+            if(!gameCubes[id].m_isMiniMap && !gameCubes[id].m_isOn)
             {
                 gameCubes[id].m_isMiniMap = true;
                 gameCubes[id].render();
@@ -124,7 +124,7 @@ private:
             if(gameCubes[id].m_isMiniMap)
             {
                 gameCubes[id].m_isMiniMap = false;
-                gameCubes[id].render();
+                gameCubes[id].shutOff();
             }
         }
     }
@@ -133,17 +133,11 @@ private:
     {
         LOG("Neighbor Remove: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
-        /*
-        if (firstID < arraysize(counters)) {
-            counters[firstID].neighborRemove++;
-            drawNeighbors(firstID);
+        // Don't deal with the base station.
+        if (firstID > CUBE_ALLOCATION || secondID > CUBE_ALLOCATION)
+        {
+            return;
         }
-        if (secondID < arraysize(counters)) {
-            counters[secondID].neighborRemove++;
-            drawNeighbors(secondID);
-        }
-        */
-        
 
         GameCube *cube1 = &gameCubes[firstID];
         GameCube *cube2 = &gameCubes[secondID];
@@ -172,36 +166,17 @@ private:
         {
             // WHO CARES?
         }
-
-        /*
-        if (mainCube == firstID || mainCube == secondID)
-        {
-            if (secondID != mainCube)
-            {
-                gameCubes[secondID].shutOff();
-            }
-            else
-            {
-                gameCubes[firstID].shutOff();
-            }
-        }
-        */
     }
 
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Add: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
 
-        /*
-        if (firstID < arraysize(counters)) {
-            counters[firstID].neighborAdd++;
-            drawNeighbors(firstID);
+        // Don't deal with the base station.
+        if (firstID > CUBE_ALLOCATION || secondID > CUBE_ALLOCATION)
+        {
+            return;
         }
-        if (secondID < arraysize(counters)) {
-            counters[secondID].neighborAdd++;
-            drawNeighbors(secondID);
-        }
-        */
 
         prevMainCube = mainCube;
         //gameCubes[prevMainCube].undoHighlight();

@@ -22,6 +22,9 @@ public:
     void handleCubeTouch(GameCube* gameCube, bool isDown);
     bool positionVisible(int, int);
 
+    
+    void drawMiniMap(GameCube* gc);
+    int m_referenceCubeID;
 private:
     void restartGame();
     void generateItems();
