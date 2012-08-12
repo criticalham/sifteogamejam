@@ -171,11 +171,21 @@ private:
                 {
                     cube2->shutOff();
                     cube1->highlight();
+
+                    if (mainCube == secondID)
+                    {
+                        mainCube = firstID;
+                    }
                 }
                 else
                 {
                     cube1->shutOff();
                     cube2->highlight();
+
+                    if (mainCube == firstID)
+                    {
+                        mainCube = secondID;
+                    }
                 }
             }
             else
