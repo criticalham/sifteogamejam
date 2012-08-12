@@ -155,8 +155,8 @@ void Game::generateItems()
     tries = 0;
     for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
     {
-        x = Random().randrange(MAPSIZE);
-        y = Random().randrange(MAPSIZE);
+        x = Random().randrange(MAPSIZE/2) * 2;
+        y = Random().randrange(MAPSIZE/2) * 2;
         
         if (!worldObjects[x][y] && (x != keyX && y != keyY))
         {
@@ -172,8 +172,8 @@ void Game::generateItems()
     tries = 0;
     for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
     {
-        x = Random().randrange(MAPSIZE/2) * 2
-        y = Random().randrange(MAPSIZE/2) * 2
+        x = Random().randrange(MAPSIZE/2) * 2;
+        y = Random().randrange(MAPSIZE/2) * 2;
         
         if (!worldObjects[x][y] && (x != keyX && y != keyY))
         {
@@ -189,8 +189,8 @@ void Game::generateItems()
     tries = 0;
     for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
     {
-        x = Random().randrange(MAPSIZE/2) * 2
-        y = Random().randrange(MAPSIZE/2) * 2
+        x = Random().randrange(MAPSIZE/2) * 2;
+        y = Random().randrange(MAPSIZE/2) * 2;
         
         if (!worldObjects[x][y] && (x != keyX && y != keyY))
         {
@@ -206,8 +206,8 @@ void Game::generateItems()
     tries = 0;
     for (i=0; i < NUM_ANIMALS_PER_TYPE; i++)
     {
-        x = Random().randrange(MAPSIZE/2) * 2
-        y = Random().randrange(MAPSIZE/2) * 2
+        x = Random().randrange(MAPSIZE/2) * 2;
+        y = Random().randrange(MAPSIZE/2) * 2;
         
         if (!worldObjects[x][y] && (x != keyX && y != keyY))
         {

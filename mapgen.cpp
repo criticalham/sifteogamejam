@@ -140,6 +140,14 @@ namespace MapGen
             case 3:
                 return FlowerBlueSmall;
                 break;
+            case 4:
+            	return TurtleSmall;
+           	case 5:
+           		return SnakeSmall;
+           	case 6:
+           		return FrogSmall;
+            case 7:
+            	return LadybugSmall;
             default:
                 return BoulderSmall;
         }
