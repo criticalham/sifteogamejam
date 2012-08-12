@@ -39,6 +39,8 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
 */
 void GameCube::reset()
 {
+    m_isMiniMap = false;
+    
     //m_x = 0;
     //m_y = 0;
     //m_isOn = false;
@@ -209,9 +211,25 @@ void GameCube::undoHighlight()
 
 void GameCube::render()
 {
-    fillBackground();
-	MapGen::drawMap(this);
-    visitAndDrawItems();
+
+    CubeID cube(m_id);
+    auto accel = cube.accel();
+
+    if(abs(accel.x) > 40 || abs(accel.y) > 40)
+    {
+        fillBackground();
+        LOG("Accels are %d %d %d, drawing mini map", accel.x, accel.y, accel.z);
+        MapGen::drawMiniMap(this);
+    }
+    else
+    {
+        fillBackground();
+        MapGen::drawMap(this);
+        visitAndDrawItems();
+    }
+
+    //drawCoord();
+    //updateRotation();
 }
 
 int GameCube::clusterSize()

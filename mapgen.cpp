@@ -41,7 +41,7 @@ namespace MapGen
 		float noise = smoothNoise((x + 64) % 64, (y + 64) % 64);
 		if (noise < 0.15)
 		{
-			return Water;
+			return GrassLight;//Water;
 		}
 		else if (noise < 0.3)
 		{
@@ -65,7 +65,6 @@ namespace MapGen
 		}
 	}
 
-
 	void drawMap(GameCube* gc)
 	{
 		BG0Drawable& draw = gc->m_vid.bg0;
@@ -82,5 +81,14 @@ namespace MapGen
 		draw.image(vec(12,4), vec(4,8), getImage(gc->m_x+1, gc->m_y), vec(0,0));		// center right
 		draw.image(vec(12,12), vec(4,4), getImage(gc->m_x+1, gc->m_y+1), vec(0,0));	// bottom right
 	}
+
+    void drawMiniMap(GameCube* gc)
+    {
+        BG0Drawable &draw = gc->m_vid.bg0;
+        draw.fill(vec(0,0), vec(1,16), Highlight);
+        draw.fill(vec(0,0), vec(16,1), Highlight);
+        draw.fill(vec(15,0), vec(1,16), Highlight);
+        draw.fill(vec(0,15), vec(16,1), Highlight);
+    }
 }
 #endif

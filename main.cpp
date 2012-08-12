@@ -12,7 +12,7 @@ static Metadata M = Metadata()
     .title("Explorathon")
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
-    .cubeRange(3);
+    .cubeRange(2, 6);
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
@@ -36,7 +36,7 @@ public:
     {
         Events::neighborAdd.set(&SensorListener::onNeighborAdd, this);
         Events::neighborRemove.set(&SensorListener::onNeighborRemove, this);
-        //Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
+        Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
         Events::cubeTouch.set(&SensorListener::onTouch, this);
         //Events::cubeBatteryLevelChange.set(&SensorListener::onBatteryChange, this);
         Events::cubeConnect.set(&SensorListener::onConnect, this);
@@ -102,36 +102,31 @@ private:
             " (" << counters[cube].touch << ")\n";
         //vid[cube].bg0rom.text(vec(1,9), str);
 
-        g_game.handleCubeTouch(&gameCubes[id], true);
+        g_game.handleCubeTouch(&gameCubes[id], cube.isTouching());
     }
 
     void onAccelChange(unsigned id)
     {
+//        gameCubes[id].render();
         CubeID cube(id);
         auto accel = cube.accel();
 
-        String<64> str;
-        str << "acc: "
-            << Fixed(accel.x, 3)
-            << Fixed(accel.y, 3)
-            << Fixed(accel.z, 3) << "\n";
-
-        unsigned changeFlags = motion[id].update();
-        if (changeFlags) {
-            // Tilt/shake changed
-
-            LOG("Tilt/shake changed, flags=%08x\n", changeFlags);
-
-            auto tilt = motion[id].tilt;
-            str << "tilt:"
-                << Fixed(tilt.x, 3)
-                << Fixed(tilt.y, 3)
-                << Fixed(tilt.z, 3) << "\n";
-
-            str << "shake: " << motion[id].shake;
+        if(abs(accel.x) > 40 || abs(accel.y) > 40)
+        {
+            if(!gameCubes[id].m_isMiniMap)
+            {
+                gameCubes[id].m_isMiniMap = true;
+                gameCubes[id].render();
+            }
         }
-
-        //vid[cube].bg0rom.text(vec(1,10), str);
+        else
+        {
+            if(gameCubes[id].m_isMiniMap)
+            {
+                gameCubes[id].m_isMiniMap = false;
+                gameCubes[id].render();
+            }
+        }
     }
 
     void onNeighborRemove(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
