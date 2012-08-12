@@ -170,6 +170,7 @@ private:
                 if ((cube1ClusterSize > cube2ClusterSize) || ((cube1ClusterSize == cube2ClusterSize && cube1->isConnectedTo(mainCube))))
                 {
                     cube2->shutOff();
+                    cube1->highlight();
                 }
                 else
                 {
