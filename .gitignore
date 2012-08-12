@@ -1,6 +1,9 @@
 *.elf
 *.o
 *.d
+*.gen.*
+
+main.d
 
 .DS_Store
 
