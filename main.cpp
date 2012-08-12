@@ -12,7 +12,7 @@ static Metadata M = Metadata()
     .title("Explorathon")
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
-    .cubeRange(2, 6);
+    .cubeRange(2, 12);
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
@@ -135,6 +135,16 @@ private:
         }
     }
 
+    void updateMiniMaps()
+    {
+        for (int i = 0; i < CUBE_ALLOCATION; i++) {
+            if(gameCubes[i].m_isMiniMap)
+            {
+                g_game.drawMiniMap(&gameCubes[i]);
+            }
+        }
+    }
+
     void onNeighborRemove(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Remove: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
@@ -181,6 +191,8 @@ private:
         {
             // WHO CARES?
         }
+
+        updateMiniMaps();
     }
 
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
@@ -222,6 +234,8 @@ private:
 
             LOG("Main cube is now %d\n", mainCube);
         }
+
+        updateMiniMaps();
     }
 
     void drawNeighbors(CubeID cube)
