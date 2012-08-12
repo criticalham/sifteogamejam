@@ -10,7 +10,7 @@ namespace MapGen
   void randomize();
 	void drawMap(GameCube* gc);
 	void drawMiniMap(GameCube* gc);
-	AssetImage intToAsset(int i);
+	PinnedAssetImage intToAsset(int i);
 };
 
 #endif

@@ -17,7 +17,9 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     m_id = idIn;
     m_vid = vid;
     m_motion = motion;
-    m_vid.initMode(BG0_BG1);
+    //m_vid.initMode(BG0_BG1);
+    m_vid.initMode(BG0_SPR_BG1);
+
     m_vid.attach(m_id);
     m_north = TOP;
 
@@ -63,6 +65,8 @@ void GameCube::fillBackground()
     BG1Drawable &draw1 = m_vid.bg1;
     //draw1.fill(Transparent);
     draw1.erase();
+
+    m_vid.sprites.erase();
 }
 
 void GameCube::highlight()
@@ -349,36 +353,10 @@ void GameCube::shutOffRecursive(BitArray<CUBE_ALLOCATION> &seenCubes)
 
 void GameCube::drawCoord()
 {
-    String<64> str;
-    str << "Coord("
-        << m_x << ","
-        << m_y << ")";
-
-    BG1Drawable &draw = m_vid.bg1;
-
-    //draw.text(vec(0,0), Font, str);
 }
-int i = 0;
+
 void GameCube::updateRotation(Rotation r)
 {
-/*
-    Neighborhood nb(m_cube);
-    if (nb.neighborAt(TOP))
-    {
-        m_vid.setRotation(ROT_NORMAL);
-    }
-    else if (nb.neighborAt(BOTTOM))
-    {
-        m_vid.setRotation(ROT_180);
-    }
-    else if (nb.neighborAt(RIGHT))
-    {
-        m_vid.setRotation(ROT_RIGHT_90);
-    }
-    else if (nb.neighborAt(LEFT))
-    {
-        m_vid.setRotation(ROT_LEFT_90);
-    }*/
     m_rotation = r;
     m_vid.setRotation(r);
 }
@@ -458,8 +436,6 @@ int GameCube::directionTo(int cubeID)
 
 void GameCube::turnOnRecursive(int referenceCubeID, BitArray<CUBE_ALLOCATION> &seenCubes)
 {
-    g_game.m_referenceCubeID = referenceCubeID;
-
     if (seenCubes.test(m_id))
     {
         return;

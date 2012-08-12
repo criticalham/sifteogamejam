@@ -22,11 +22,11 @@ public:
     void run();
     void visitAndDrawItemsAt(GameCube* gameCube);
     void handleCubeTouch(GameCube* gameCube, bool isDown);
-    bool positionVisible(int, int);
+    bool positionVisible(int x, int y);
 
     
     void drawMiniMap(GameCube* gc);
-    int m_referenceCubeID;
+    void drawWorldObjects(GameCube *gc, int x, int y);
 private:
     void restartGame();
     void generateItems();
