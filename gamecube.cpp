@@ -33,20 +33,23 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
 */
 void GameCube::reset()
 {
-    m_x = 0;
-    m_y = 0;
-    m_isOn = false;
+    //m_x = 0;
+    //m_y = 0;
+    //m_isOn = false;
 
-    fillBackground();
+    render();
+    if (m_id == 0) highlight();
+
 }
 
 void GameCube::fillBackground()
 {
     BG0Drawable &draw = m_vid.bg0;
-    BG1Drawable &draw1 = m_vid.bg1;
     draw.image(vec(0,0), Emptiness);
     draw.erase();
-    draw1.erase();
+    BG1Drawable &draw1 = m_vid.bg1;
+    draw1.fill(Transparent);
+    //draw1.erase();
 }
 
 void GameCube::highlight()
@@ -67,9 +70,7 @@ void GameCube::render()
 {
     fillBackground();
 	MapGen::drawMap(this);
-    //drawCoord();
     visitAndDrawItems();
-    //updateRotation();
 }
 
 /**

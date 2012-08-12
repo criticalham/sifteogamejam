@@ -32,12 +32,16 @@ void Game::reset()
 void Game::restartGame()
 {
     LOG("Game reset!\n");
+
+    // Reset game data
     reset();
 
-    for(int cubeIndex=0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
+    // Reset all cubes
+    for (int cubeIndex = 0; cubeIndex < CUBE_ALLOCATION; cubeIndex++)
     {
+        LOG("Resetting m_gameCube[%d]\n", cubeIndex);
         m_gameCubes[cubeIndex].reset();
-        m_gameCubes[cubeIndex].render();
+        //visitAndDrawItemsAt(&m_gameCubes[cubeIndex]);
     }
 }
 
@@ -60,8 +64,7 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
         foundKey = true;
 
         if(!gotKey)
-            draw.maskedImage(Key, Transparent);
-
+            draw.maskedImage(Key, Emptiness);
 
         LOG("Game key found!\n");
     }
@@ -91,6 +94,7 @@ void Game::visitAndDrawItemsAt(GameCube* gameCube)
   */
 void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 {
+    LOG("isDown is %d\n", isDown);
     if(isDown)
     {
         int x = gameCube->m_x;
@@ -108,9 +112,9 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
 
             if(gotKey)
             {
-                LOG("WINNER!\n");
                 gotChest = true;
                 AudioChannel(0).play(CoinSound);
+                LOG("Chest got!\n");
                 draw.maskedImage(ChestOpen, Transparent);
             }
         }
@@ -118,7 +122,7 @@ void Game::handleCubeTouch(GameCube* gameCube, bool isDown)
         if(!gotKey && keyX == x && keyY == y)
         {
             AudioChannel(0).play(KeySound);
-            draw.maskedImage(ChestOpen, Transparent);
+            LOG("Key got!\n");
             gotKey = true;
             gameCube->render();
         }
