@@ -251,10 +251,14 @@ void Game::drawMiniMap(GameCube* gc)
     // TODO: draw 128x128 background grid
 
     for (int i = 0; i < CUBE_ALLOCATION; i++) {
-        if(gameCubes[i].m_isOn)
+        if(!gameCubes[i].m_isOn)
+        {
+            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Emptiness);
+        }
+        else
         {
             LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
-            draw.fill(vec(int(gameCubes[i].m_x / 2), int(gameCubes[i].m_y / 2)), vec(1,1), Highlight);
+            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Highlight);
         }
     }
 
