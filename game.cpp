@@ -23,6 +23,11 @@ void Game::initWithCubes(GameCube gameCubes[CUBE_ALLOCATION])
     reset();
 
     LOG("init() completed\n");
+    for (int i = 0; i < MAPSIZE; i++) {
+        for (int j = 0; j < MAPSIZE; j++) {
+            m_visited[i][j] = false;
+        }
+    }
 }
 
 void Game::generateItems()
@@ -226,11 +231,19 @@ void Game::drawWorldObjects(GameCube *gameCube, int x, int y)
   */
 void Game::visitAndDrawItemsAt(GameCube* gameCube)
 {
+
     int x = gameCube->m_x;
     int y = gameCube->m_y;
     BG1Drawable& draw = gameCube->m_vid.bg1;
 
     drawWorldObjects(gameCube, x, y);
+
+    if(!m_visited[x][y])
+    {
+        // Play a sound effect for finding a new tile?
+        LOG("Found unvisited tile.\n");
+        m_visited[x][y] = true;
+    }
 
     if(keyX == x && keyY == y)
     {
@@ -321,11 +334,24 @@ void Game::drawMiniMap(GameCube* gc)
 
     // TODO: draw 128x128 background grid
 
+    for (int i = 0; i < MAPSIZE; i+=2) {
+        for (int j = 0; j < MAPSIZE; j+=2) {
+            if(m_visited[i][j] == true)
+                draw.fill(vec(i, j), vec(2,2), Visited);
+            else
+                draw.fill(vec(i, j), vec(2,2), Unvisited);
+        }
+    }
+
     for (int i = 0; i < CUBE_ALLOCATION; i++) {
-        if(gameCubes[i].m_isOn)
+        if(!gameCubes[i].m_isOn)
+        {
+//            draw.fill(vec(int(gameCubes[i].m_x), int(gameCubes[i].m_y)), vec(2,2), Unvisited);
+        }
+        else
         {
             LOG("Drawing point at %d, %d", gameCubes[i].m_x, gameCubes[i].m_y);
-            draw.fill(vec(int(gameCubes[i].m_x / 2), int(gameCubes[i].m_y / 2)), vec(1,1), Highlight);
+            draw.fill(vec(gameCubes[i].m_x, gameCubes[i].m_y), vec(2,2), Highlight);
         }
     }
 

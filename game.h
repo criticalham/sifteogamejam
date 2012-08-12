@@ -27,6 +27,8 @@ public:
     
     void drawMiniMap(GameCube* gc);
     void drawWorldObjects(GameCube *gc, int x, int y);
+
+    bool m_visited[MAPSIZE][MAPSIZE];
 private:
     void restartGame();
     void generateItems();

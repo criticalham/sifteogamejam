@@ -23,6 +23,8 @@ void GameCube::initialize(int idIn, VideoBuffer &vid, TiltShakeRecognizer &motio
     m_vid.attach(m_id);
     m_north = TOP;
 
+    busy = false;
+
     // Allocate 16x2 tiles on BG1 for text at the bottom of the screen
     //m_vid.bg1.setMask(BG1Mask::filled(vec(0,0), vec(10,10)));
 

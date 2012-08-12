@@ -12,7 +12,7 @@ static Metadata M = Metadata()
     .title("Explorathon")
     .package("com.popcapsf.Explorathon", "0.1a")
     .icon(Icon)
-    .cubeRange(2, 6);
+    .cubeRange(2, 12);
 
 static AssetSlot MainSlot = AssetSlot::allocate()
     .bootstrap(GameAssets);
@@ -135,6 +135,16 @@ private:
         }
     }
 
+    void updateMiniMaps()
+    {
+        for (int i = 0; i < CUBE_ALLOCATION; i++) {
+            if(gameCubes[i].m_isMiniMap)
+            {
+                g_game.drawMiniMap(&gameCubes[i]);
+            }
+        }
+    }
+
     void onNeighborRemove(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
     {
         LOG("Neighbor Remove: %02x:%d - %02x:%d\n", firstID, firstSide, secondID, secondSide);
@@ -150,17 +160,26 @@ private:
 
         if (cube1->m_isOn && cube2->m_isOn)
         {
+            //if (cube1->isConnectedTo(cube2)) return;
             int cube1ClusterSize = cube1->clusterSize();
             int cube2ClusterSize = cube2->clusterSize();
 
             if ((cube1ClusterSize > cube2ClusterSize) || ((cube1ClusterSize == cube2ClusterSize && cube1->isConnectedTo(mainCube))))
             {
-                cube2->shutOff();
+                if(!cube2->isConnectedTo(mainCube))
+                {
+                    LOG("Shut off cube %d\n", cube2->m_id);
+                    cube2->shutOff();
+                }
                 cube1->highlight();
             }
             else
             {
-                cube1->shutOff();
+                if(!cube1->isConnectedTo(mainCube))
+                {
+                    LOG("Shut off cube %d\n", cube1->m_id);
+                    cube1->shutOff();
+                }
                 cube2->highlight();
             }
         }
@@ -172,6 +191,8 @@ private:
         {
             // WHO CARES?
         }
+
+        updateMiniMaps();
     }
 
     void onNeighborAdd(unsigned firstID, unsigned firstSide, unsigned secondID, unsigned secondSide)
@@ -213,6 +234,8 @@ private:
 
             LOG("Main cube is now %d\n", mainCube);
         }
+
+        updateMiniMaps();
     }
 
     void drawNeighbors(CubeID cube)
