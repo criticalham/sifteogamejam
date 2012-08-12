@@ -41,15 +41,15 @@ namespace MapGen
 		float noise = smoothNoise((x + 64) % 64, (y + 64) % 64);
 		if (noise < 0.15)
 		{
-			return Water;
+			return GrassLight;//Water;
 		}
 		else if (noise < 0.3)
 		{
-			return GrassLight;//Sand;
+			return Sand;
 		}
 		else if (noise < 0.45)
 		{
-			return GrassDark;//Dirt;
+			return Dirt;
 		}
 		else if (noise < 0.6)
 		{
@@ -61,7 +61,7 @@ namespace MapGen
 		}
 		else
 		{
-			return GrassLight;//Rocks;
+			return Rocks;
 		}
 	}
 
