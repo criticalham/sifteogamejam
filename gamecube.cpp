@@ -47,13 +47,16 @@ void GameCube::highlight()
     draw.fill(vec(0,15), vec(16,1), Highlight);
 }
 
+void GameCube::undoHighlight()
+{
+    render();
+}
+
 void GameCube::render()
 {
     fillBackground();
 	MapGen::drawMap(this);
     drawCoord();
-
-    //updateRotation();
 }
 
 void GameCube::shutOff()

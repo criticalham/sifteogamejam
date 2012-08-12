@@ -18,6 +18,7 @@ class GameCube
         void initialize(int, VideoBuffer&, TiltShakeRecognizer&);
         void fillBackground();
         void highlight();
+        void undoHighlight();
         void render();
         void turnOn(int referenceCubeID);
         void shutOff();
