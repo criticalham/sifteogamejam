@@ -19,6 +19,7 @@ class GameCube
         void reset();
         void fillBackground();
         void highlight();
+        void undoHighlight();
         void render();
         void turnOn(int referenceCubeID);
         void shutOff();
